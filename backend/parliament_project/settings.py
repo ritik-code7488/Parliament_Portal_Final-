@@ -1,13 +1,34 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-change-this-in-production'
 
-DEBUG = True
+# ==============================
+# SECURITY
+# ==============================
 
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-change-this-in-production'
+)
 
+DEBUG = 'RENDER' not in os.environ
+
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+]
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+
+# ==============================
+# APPLICATIONS
+# ==============================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -32,10 +53,15 @@ INSTALLED_APPS = [
 ]
 
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+# ==============================
+# MIDDLEWARE
+# ==============================
 
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
 
@@ -51,8 +77,18 @@ MIDDLEWARE = [
 ]
 
 
+# ==============================
+# URL / WSGI
+# ==============================
+
 ROOT_URLCONF = 'parliament_project.urls'
 
+WSGI_APPLICATION = 'parliament_project.wsgi.application'
+
+
+# ==============================
+# TEMPLATES
+# ==============================
 
 TEMPLATES = [
     {
@@ -75,43 +111,72 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'parliament_project.wsgi.application'
-
+# ==============================
+# DATABASE
+# ==============================
 
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': 'ParliamentPortalDB',
-        'HOST': r'.\SQLEXPRESS',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': os.environ.get(
+            'DB_NAME',
+            'ParliamentPortalDB'
+        ),
+        'HOST': os.environ.get(
+            'DB_HOST',
+            r'.\SQLEXPRESS'
+        ),
+        'USER': os.environ.get('DB_USER', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server',
-            'Trusted_Connection': 'yes',
+            'driver': os.environ.get(
+                'DB_DRIVER',
+                'ODBC Driver 18 for SQL Server'
+            ),
+            'Trusted_Connection': os.environ.get(
+                'DB_TRUSTED_CONNECTION',
+                'yes'
+            ),
             'extra_params': 'TrustServerCertificate=yes;',
         },
     }
 }
 
 
+# ==============================
+# PASSWORD VALIDATION
+# ==============================
+
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator',
     },
 
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator',
     },
 
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator',
     },
 
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator',
     },
 ]
 
+
+# ==============================
+# INTERNATIONALIZATION
+# ==============================
 
 LANGUAGE_CODE = 'en-us'
 
@@ -122,11 +187,30 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = 'static/'
+# ==============================
+# STATIC FILES
+# ==============================
 
+STATIC_URL = '/static/'
+
+if not DEBUG:
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+    STATICFILES_STORAGE = (
+        'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    )
+
+
+# ==============================
+# DEFAULT PRIMARY KEY
+# ==============================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# ==============================
+# CORS
+# ==============================
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
@@ -135,6 +219,15 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5174',
 ]
 
+FRONTEND_URL = os.environ.get('FRONTEND_URL')
+
+if FRONTEND_URL:
+    CORS_ALLOWED_ORIGINS.append(FRONTEND_URL)
+
+
+# ==============================
+# REST FRAMEWORK
+# ==============================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
