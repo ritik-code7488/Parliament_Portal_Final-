@@ -1,0 +1,600 @@
+/* =========================================================
+   PARLIAMENT PORTAL — PREMIUM HEADER
+   ========================================================= */
+
+:root {
+  --portal-navy-950: #061b3b;
+  --portal-navy-900: #092b5b;
+  --portal-navy-800: #103f78;
+  --portal-blue: #2f6db5;
+  --portal-blue-light: #eaf3ff;
+  --portal-border: #dbe5f1;
+  --portal-text: #172b4d;
+  --portal-muted: #718096;
+  --portal-white: #ffffff;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: 100%;
+  min-height: 76px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 28px;
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      115deg,
+      var(--portal-navy-950) 0%,
+      var(--portal-navy-900) 48%,
+      var(--portal-navy-800) 100%
+    );
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  box-shadow:
+    0 8px 28px rgba(8, 31, 65, 0.16);
+}
+
+
+/* =========================================================
+   LEFT / LOGO
+   ========================================================= */
+
+.header-left {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  margin-right: 28px;
+}
+
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  min-width: 255px;
+}
+
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.11);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.18);
+
+  color: #ffffff;
+
+  font-size: 22px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+.logo-title {
+  color: #ffffff;
+
+  font-size: 18px;
+  line-height: 1.15;
+
+  font-weight: 800;
+
+  letter-spacing: -0.2px;
+
+  white-space: nowrap;
+}
+
+
+.logo-subtitle {
+  margin-top: 4px;
+
+  color:
+    rgba(255, 255, 255, 0.66);
+
+  font-size: 10px;
+
+  line-height: 1.25;
+
+  letter-spacing: 0.35px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+   ========================================================= */
+
+.main-navigation {
+  flex: 1 1 auto;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+}
+
+.main-navigation::-webkit-scrollbar {
+  display: none;
+}
+
+
+.main-navigation a {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+
+  padding: 0 13px;
+
+  border-radius: 9px;
+
+  color:
+    rgba(255, 255, 255, 0.74);
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.main-navigation a:hover {
+  color: #ffffff;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  transform: translateY(-1px);
+}
+
+
+.main-navigation a.active {
+  color: #ffffff;
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255, 255, 255, 0.08);
+}
+
+
+.main-navigation a.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 14px;
+  right: 14px;
+
+  bottom: 3px;
+
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   RIGHT AREA
+   ========================================================= */
+
+.header-right {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-left: 18px;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.member-search {
+  position: relative;
+
+  width: 190px;
+
+  display: flex;
+  align-items: center;
+}
+
+
+.member-search .search-icon {
+  position: absolute;
+
+  left: 12px;
+
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  font-size: 14px;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+
+.member-search input {
+  width: 100%;
+  height: 38px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.16);
+
+  border-radius: 9px;
+
+  outline: none;
+
+  padding:
+    0 12px 0 35px;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  transition:
+    background 0.2s ease,
+    border 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.member-search input::placeholder {
+  color:
+    rgba(255, 255, 255, 0.58);
+}
+
+
+.member-search input:focus {
+  background:
+    rgba(255, 255, 255, 0.13);
+
+  border-color:
+    rgba(255, 255, 255, 0.32);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 255, 255, 0.06);
+}
+
+
+/* =========================================================
+   SEARCH RESULTS
+   ========================================================= */
+
+.search-results {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 300px;
+
+  overflow: hidden;
+
+  border:
+    1px solid var(--portal-border);
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 18px 45px
+    rgba(11, 37, 70, 0.18);
+}
+
+
+.search-result-item {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  padding: 13px 15px;
+
+  color: var(--portal-text);
+
+  text-decoration: none;
+
+  border-bottom:
+    1px solid #eef2f7;
+
+  transition:
+    background 0.18s ease;
+}
+
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+
+.search-result-item:hover {
+  background: #f5f9ff;
+}
+
+
+.search-result-item strong {
+  font-size: 12px;
+  font-weight: 800;
+
+  color: #18335a;
+}
+
+
+.search-result-item span {
+  font-size: 11px;
+
+  color: #7a8799;
+}
+
+
+.no-search-results {
+  padding: 15px;
+
+  color: #7b8797;
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   LOGIN / PROFILE BUTTON
+   ========================================================= */
+
+.login-button {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  background:
+    rgba(255, 255, 255, 0.1);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.15);
+
+  font-size: 17px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.login-button:hover {
+  background:
+    rgba(255, 255, 255, 0.18);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1250px) {
+
+  .top-header {
+    padding: 0 18px;
+  }
+
+  .header-left {
+    margin-right: 12px;
+  }
+
+  .logo-area {
+    min-width: 220px;
+  }
+
+  .logo-subtitle {
+    display: none;
+  }
+
+  .main-navigation a {
+    padding: 0 9px;
+    font-size: 11px;
+  }
+
+  .member-search {
+    width: 160px;
+  }
+}
+
+
+@media (max-width: 1050px) {
+
+  .logo-title {
+    font-size: 16px;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .main-navigation {
+    justify-content: flex-start;
+  }
+
+  .header-right {
+    margin-left: 10px;
+  }
+
+  .member-search {
+    width: 140px;
+  }
+}
+
+
+@media (max-width: 850px) {
+
+  .top-header {
+    min-height: 70px;
+    padding: 0 14px;
+  }
+
+  .logo-area {
+    min-width: auto;
+  }
+
+  .logo-title {
+    display: none;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .main-navigation {
+    gap: 2px;
+  }
+
+  .main-navigation a {
+    min-height: 38px;
+    padding: 0 8px;
+    font-size: 10px;
+  }
+
+  .member-search {
+    width: 125px;
+  }
+
+  .member-search input {
+    height: 36px;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .top-header {
+    flex-wrap: wrap;
+
+    min-height: auto;
+
+    padding:
+      10px 12px;
+  }
+
+  .header-left {
+    width: 100%;
+
+    margin: 0 0 8px;
+  }
+
+  .main-navigation {
+    order: 3;
+
+    width: 100%;
+
+    padding-bottom: 2px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+
+  .member-search {
+    width: 145px;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  .member-search {
+    width: 120px;
+  }
+
+  .member-search input {
+    font-size: 11px;
+  }
+
+  .login-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .main-navigation a {
+    padding: 0 7px;
+  }
+}

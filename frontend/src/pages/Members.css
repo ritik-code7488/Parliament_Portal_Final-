@@ -1,0 +1,1840 @@
+/* =========================================================
+   PREMIUM PARLIAMENT MEMBERS PAGE
+   Search + Filters preserved
+   Indian Parliament + Flag + Ashoka Chakra theme
+   Desktop: exactly 2 member cards per row
+========================================================= */
+
+.members-page {
+  min-height: calc(100vh - 78px);
+  background: #f4f7fb;
+  color: #102a43;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.members-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 38px 6% 48px;
+
+  background:
+    radial-gradient(
+      circle at 82% 18%,
+      rgba(91, 168, 225, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 15% 80%,
+      rgba(35, 105, 168, 0.16),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #04162e 0%,
+      #082b53 52%,
+      #0b4678 100%
+    );
+
+  color: #ffffff;
+}
+
+.members-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  opacity: 0.045;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.7) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.7) 1px,
+      transparent 1px
+    );
+
+  background-size: 42px 42px;
+
+  pointer-events: none;
+}
+
+.members-hero::after {
+  display: none;
+}
+
+
+/* =========================================================
+   HERO BACKGROUND
+========================================================= */
+
+.members-hero-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.members-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+}
+
+.glow-one {
+  width: 320px;
+  height: 320px;
+  right: 12%;
+  top: -180px;
+
+  background: rgba(68, 153, 216, 0.12);
+}
+
+.glow-two {
+  width: 260px;
+  height: 260px;
+  left: -120px;
+  bottom: -150px;
+
+  background: rgba(0, 93, 150, 0.14);
+}
+
+.members-grid-pattern {
+  position: absolute;
+  inset: 0;
+}
+
+
+/* =========================================================
+   INDIAN PARLIAMENT WATERMARK
+========================================================= */
+
+.parliament-watermark {
+  position: absolute;
+
+  right: 3%;
+  bottom: -12px;
+
+  width: 520px;
+  height: 330px;
+
+  opacity: 0.13;
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+
+/* Dome */
+
+.building-dome {
+  position: absolute;
+
+  left: 50%;
+  top: 18px;
+
+  transform: translateX(-50%);
+
+  width: 170px;
+  height: 105px;
+}
+
+.dome-top {
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  transform: translateX(-50%);
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.dome-main {
+  position: absolute;
+
+  left: 50%;
+  bottom: 10px;
+
+  transform: translateX(-50%);
+
+  width: 155px;
+  height: 85px;
+
+  border-radius: 155px 155px 0 0;
+
+  border: 7px solid rgba(255, 255, 255, 0.85);
+  border-bottom: none;
+}
+
+.dome-base {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  transform: translateX(-50%);
+
+  width: 190px;
+  height: 13px;
+
+  border-radius: 4px;
+
+  background: rgba(255, 255, 255, 0.8);
+}
+
+
+/* Parliament roof */
+
+.building-roof {
+  position: absolute;
+
+  left: 50%;
+  top: 113px;
+
+  transform: translateX(-50%);
+
+  width: 440px;
+  height: 18px;
+
+  border-radius: 4px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  box-shadow:
+    0 8px 0 rgba(255, 255, 255, 0.14);
+}
+
+
+/* Parliament columns */
+
+.building-columns {
+  position: absolute;
+
+  left: 50%;
+  top: 135px;
+
+  transform: translateX(-50%);
+
+  width: 425px;
+  height: 130px;
+
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.building-columns span {
+  width: 14px;
+
+  border-radius: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.55)
+    );
+}
+
+
+/* Building base */
+
+.building-base {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  transform: translateX(-50%);
+
+  width: 480px;
+  height: 28px;
+
+  border-radius: 5px 5px 0 0;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  box-shadow:
+    0 -9px 0 rgba(255, 255, 255, 0.13);
+}
+
+
+/* =========================================================
+   INDIAN FLAG
+========================================================= */
+
+.indian-flag {
+  position: absolute;
+
+  right: 40px;
+  top: 20px;
+
+  width: 115px;
+  height: 76px;
+
+  transform: rotate(-2deg);
+
+  filter:
+    drop-shadow(
+      0 8px 12px rgba(0, 0, 0, 0.12)
+    );
+}
+
+.indian-flag::before {
+  content: "";
+
+  position: absolute;
+
+  left: 8px;
+  top: 0;
+
+  width: 3px;
+  height: 108px;
+
+  background: rgba(255, 255, 255, 0.8);
+
+  border-radius: 2px;
+}
+
+.flag-saffron,
+.flag-white,
+.flag-green {
+  position: absolute;
+
+  left: 10px;
+
+  width: 105px;
+  height: 25px;
+}
+
+.flag-saffron {
+  top: 0;
+
+  background: #ff9933;
+
+  border-radius: 2px 2px 0 0;
+}
+
+.flag-white {
+  top: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+}
+
+.flag-green {
+  top: 50px;
+
+  background: #138808;
+
+  border-radius: 0 0 2px 2px;
+}
+
+
+/* Ashoka Chakra */
+
+.flag-white i {
+  position: relative;
+
+  display: block;
+
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid #000080;
+
+  border-radius: 50%;
+}
+
+.flag-white i::before,
+.flag-white i::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 2px;
+  height: 18px;
+
+  background: #000080;
+
+  transform-origin: center;
+}
+
+.flag-white i::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.flag-white i::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.members-hero-content {
+  position: relative;
+  z-index: 3;
+
+  max-width: 1320px;
+
+  margin: 0 auto;
+}
+
+
+/* Breadcrumb */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 27px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.breadcrumb a {
+  color: rgba(255, 255, 255, 0.72);
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: #ffffff;
+}
+
+.breadcrumb span {
+  color: rgba(255, 255, 255, 0.35);
+
+  font-size: 17px;
+}
+
+.breadcrumb strong {
+  color: #9fd4ff;
+
+  font-weight: 800;
+}
+
+
+/* Main hero */
+
+.members-hero-main {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 60px;
+}
+
+.members-hero-left {
+  position: relative;
+
+  max-width: 850px;
+}
+
+.members-label {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 13px;
+
+  color: #9fd4ff;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.members-hero h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: clamp(38px, 4.5vw, 58px);
+
+  line-height: 1.06;
+
+  font-weight: 850;
+
+  letter-spacing: -1.8px;
+}
+
+.members-hero h1 span {
+  color: #83c7f5;
+}
+
+.members-hero p {
+  max-width: 720px;
+
+  margin: 16px 0 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 14px;
+
+  line-height: 1.75;
+}
+
+
+/* =========================================================
+   HERO SEARCH BAR
+   ORIGINAL SEARCH STRUCTURE PRESERVED
+========================================================= */
+
+.hero-search {
+  display: flex;
+  align-items: center;
+
+  width: min(100%, 760px);
+
+  height: 58px;
+
+  margin-top: 28px;
+
+  padding: 5px;
+
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.98);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.18);
+}
+
+.hero-search-icon {
+  width: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #667085;
+
+  font-size: 16px;
+}
+
+.hero-search input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 100%;
+
+  padding: 0 10px;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #172033;
+
+  font-size: 12px;
+}
+
+.hero-search input::placeholder {
+  color: #98a2b3;
+}
+
+.hero-search button {
+  height: 46px;
+
+  padding: 0 23px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #123b70,
+      #092a59
+    );
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.hero-search button:hover {
+  transform: translateY(-1px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #2869c7,
+      #174ea6
+    );
+
+  box-shadow:
+    0 7px 16px rgba(9, 42, 89, 0.25);
+}
+
+
+/* =========================================================
+   HERO FILTERS
+========================================================= */
+
+.hero-filters {
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 14px;
+}
+
+.hero-filter {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  min-width: 190px;
+
+  padding: 9px 12px;
+
+  background: rgba(255, 255, 255, 0.09);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  border-radius: 9px;
+
+  backdrop-filter: blur(8px);
+}
+
+.hero-filter > span {
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+.hero-filter select {
+  flex: 1;
+
+  min-width: 0;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.hero-filter select option {
+  background: #ffffff;
+
+  color: #172033;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.members-statistics {
+  display: flex;
+
+  align-items: center;
+
+  flex-shrink: 0;
+
+  min-width: 320px;
+
+  padding: 19px 22px;
+
+  background: rgba(255, 255, 255, 0.075);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  border-radius: 15px;
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.stat-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  flex: 1;
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.10);
+
+  color: #9fd4ff;
+
+  font-size: 16px;
+}
+
+.stat-item strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 21px;
+
+  line-height: 1;
+
+  font-weight: 850;
+}
+
+.stat-item span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.stat-divider {
+  width: 1px;
+
+  height: 34px;
+
+  margin: 0 12px;
+
+  background: rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.members-container {
+  max-width: 1320px;
+
+  margin: 0 auto;
+
+  padding: 42px 4% 90px;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.members-section-header {
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 25px;
+}
+
+.section-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #2869a7;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  letter-spacing: 1.8px;
+}
+
+.members-section-header h2 {
+  margin: 0;
+
+  color: #102a56;
+
+  font-size: 26px;
+
+  line-height: 1.2;
+
+  font-weight: 850;
+
+  letter-spacing: -0.5px;
+}
+
+.members-section-header p {
+  margin: 7px 0 0;
+
+  color: #667085;
+
+  font-size: 12px;
+}
+
+.members-count {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 7px;
+
+  padding: 10px 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #dce5ef;
+
+  border-radius: 9px;
+
+  box-shadow:
+    0 5px 15px rgba(16, 42, 86, 0.05);
+}
+
+.members-count strong {
+  color: #123b70;
+
+  font-size: 18px;
+
+  font-weight: 850;
+}
+
+.members-count span {
+  color: #667085;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   MEMBERS GRID
+   DESKTOP = EXACTLY 2 CARDS
+========================================================= */
+
+.members-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 26px;
+
+  align-items: stretch;
+}
+
+
+/* =========================================================
+   MEMBER CARD
+========================================================= */
+
+.member-card {
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #dce5ef;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 8px 28px rgba(16, 42, 86, 0.065);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.member-card::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 0;
+  right: 0;
+
+  height: 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff9933 0%,
+      #ffffff 48%,
+      #138808 100%
+    );
+
+  opacity: 0.95;
+}
+
+.member-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #bfd3e8;
+
+  box-shadow:
+    0 18px 42px rgba(16, 42, 86, 0.13);
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.member-card-top {
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 25px 26px 22px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f9fbff 0%,
+      #edf5fc 100%
+    );
+
+  border-bottom: 1px solid #e5ebf2;
+}
+
+
+/* =========================================================
+   MEMBER PHOTO
+========================================================= */
+
+.member-photo-wrapper {
+  position: relative;
+
+  flex: 0 0 78px;
+
+  width: 78px;
+  height: 78px;
+}
+
+.member-photo,
+.member-avatar {
+  width: 78px;
+  height: 78px;
+
+  box-sizing: border-box;
+
+  border-radius: 50%;
+}
+
+.member-photo {
+  display: block;
+
+  object-fit: cover;
+
+  border: 4px solid #ffffff;
+
+  box-shadow:
+    0 7px 20px rgba(9, 42, 89, 0.16);
+}
+
+.member-avatar {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 4px solid #ffffff;
+
+  background:
+    linear-gradient(
+      145deg,
+      #173f78,
+      #082a58
+    );
+
+  color: #ffffff;
+
+  font-size: 24px;
+
+  font-weight: 850;
+
+  box-shadow:
+    0 7px 20px rgba(9, 42, 89, 0.17);
+}
+
+.member-online {
+  position: absolute;
+
+  right: 2px;
+  bottom: 3px;
+
+  width: 14px;
+  height: 14px;
+
+  border: 3px solid #ffffff;
+
+  border-radius: 50%;
+
+  background: #98a2b3;
+}
+
+.member-online.active {
+  background: #12b76a;
+
+  box-shadow:
+    0 0 0 3px rgba(18, 183, 106, 0.10);
+}
+
+
+/* =========================================================
+   MEMBER BASIC
+========================================================= */
+
+.member-basic {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.member-top-badges {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 8px;
+}
+
+.house-badge,
+.active-badge,
+.inactive-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 23px;
+
+  padding: 0 8px;
+
+  border-radius: 6px;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  white-space: nowrap;
+}
+
+.house-badge {
+  background: #e8f2fc;
+
+  border: 1px solid #cfe2f3;
+
+  color: #185b91;
+}
+
+.active-badge {
+  background: #ecfdf3;
+
+  border: 1px solid #c9f0dc;
+
+  color: #027a48;
+}
+
+.inactive-badge {
+  background: #f2f4f7;
+
+  border: 1px solid #e1e4e8;
+
+  color: #667085;
+}
+
+.member-basic h2 {
+  margin: 0;
+
+  color: #102a56;
+
+  font-size: 21px;
+
+  line-height: 1.25;
+
+  font-weight: 850;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.member-id {
+  display: inline-flex;
+
+  margin-top: 7px;
+
+  padding: 4px 8px;
+
+  background: #ffffff;
+
+  border: 1px solid #d9e3ee;
+
+  border-radius: 5px;
+
+  color: #667085;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  letter-spacing: 0.7px;
+}
+
+
+/* =========================================================
+   MEMBER DETAILS
+========================================================= */
+
+.member-details {
+  flex: 1;
+
+  padding: 7px 26px 8px;
+
+  background: #ffffff;
+}
+
+.member-detail {
+  display: grid;
+
+  grid-template-columns: 34px 125px minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 11px;
+
+  min-height: 58px;
+
+  border-bottom: 1px solid #edf1f5;
+}
+
+.member-detail:last-child {
+  border-bottom: none;
+}
+
+.detail-icon {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f0f6fc;
+
+  color: #2869a7;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+.detail-content {
+  min-width: 0;
+}
+
+.detail-content span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #98a2b3;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+.detail-content strong {
+  display: block;
+
+  color: #344054;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+
+  font-weight: 750;
+
+  overflow-wrap: break-word;
+}
+
+
+/* =========================================================
+   CARD FOOTER
+========================================================= */
+
+.member-card-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px 26px;
+
+  background: #fbfcfe;
+
+  border-top: 1px solid #edf1f5;
+}
+
+.party-mark {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 38px;
+  min-height: 30px;
+
+  padding: 0 9px;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0f5fa,
+      #e5edf6
+    );
+
+  border: 1px solid #d7e2ed;
+
+  color: #245a88;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  letter-spacing: 0.6px;
+}
+
+
+/* =========================================================
+   VIEW PROFILE BUTTON
+========================================================= */
+
+.view-profile-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 39px;
+
+  padding: 0 18px;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #153d75,
+      #082a59
+    );
+
+  border: 1px solid #082a59;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 10px;
+
+  font-weight: 850;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 6px 15px rgba(9, 42, 89, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.view-profile-button span {
+  font-size: 14px;
+
+  line-height: 1;
+}
+
+.view-profile-button:hover {
+  transform: translateY(-2px);
+
+  background:
+    linear-gradient(
+      135deg,
+      #2869c7,
+      #174ea6
+    );
+
+  box-shadow:
+    0 9px 20px rgba(23, 78, 166, 0.20);
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.members-message {
+  min-height: 300px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  color: #667085;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+
+  margin-bottom: 15px;
+
+  border: 4px solid #dce5ef;
+
+  border-top-color: #2869a7;
+
+  border-radius: 50%;
+
+  animation:
+    members-spin 0.8s linear infinite;
+}
+
+@keyframes members-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.members-error {
+  max-width: 600px;
+
+  margin: 50px auto;
+
+  padding: 40px 30px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #ffd6d2;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 25px rgba(16, 42, 86, 0.07);
+}
+
+.error-icon {
+  margin-bottom: 10px;
+
+  font-size: 36px;
+}
+
+.members-error h3 {
+  margin: 0 0 8px;
+
+  color: #b42318;
+
+  font-size: 20px;
+}
+
+.members-error p {
+  margin: 0 0 20px;
+
+  color: #667085;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.retry-button {
+  min-height: 38px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #102a56;
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   NO MEMBERS
+========================================================= */
+
+.no-members {
+  padding: 70px 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e7f0;
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 25px rgba(16, 42, 86, 0.05);
+}
+
+.no-members-icon {
+  margin-bottom: 12px;
+
+  font-size: 36px;
+}
+
+.no-members h3 {
+  margin: 0 0 8px;
+
+  color: #102a56;
+
+  font-size: 21px;
+}
+
+.no-members p {
+  margin: 0 0 20px;
+
+  color: #667085;
+
+  font-size: 13px;
+}
+
+.no-members button {
+  min-height: 38px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #102a56;
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+
+  .members-hero-main {
+    gap: 30px;
+  }
+
+  .members-statistics {
+    min-width: 285px;
+  }
+
+  .parliament-watermark {
+    right: -80px;
+
+    transform: scale(0.82);
+
+    transform-origin: right bottom;
+  }
+
+  .member-detail {
+    grid-template-columns: 32px 105px minmax(0, 1fr);
+  }
+
+}
+
+
+/* =========================================================
+   TABLET / SMALL DESKTOP
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .members-hero-main {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 30px;
+  }
+
+  .members-statistics {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .parliament-watermark {
+    right: -130px;
+
+    opacity: 0.08;
+  }
+
+  /*
+     On tablet we use one card per row
+     for proper readability.
+  */
+
+  .members-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .members-section-header {
+    align-items: flex-start;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .members-hero {
+    padding: 30px 5% 38px;
+  }
+
+  .members-hero h1 {
+    font-size: 36px;
+
+    letter-spacing: -1px;
+  }
+
+  .members-hero p {
+    font-size: 13px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+  }
+
+  .parliament-watermark {
+    right: -210px;
+    bottom: -30px;
+
+    transform: scale(0.72);
+
+    opacity: 0.06;
+  }
+
+  .indian-flag {
+    right: 65px;
+  }
+
+  .hero-search {
+    height: auto;
+
+    min-height: 54px;
+
+    flex-wrap: nowrap;
+  }
+
+  .hero-search-icon {
+    width: 40px;
+  }
+
+  .hero-search input {
+    font-size: 11px;
+  }
+
+  .hero-search button {
+    height: 44px;
+
+    padding: 0 14px;
+  }
+
+  .hero-filters {
+    flex-direction: column;
+  }
+
+  .hero-filter {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .members-statistics {
+    padding: 15px;
+
+    min-width: 0;
+  }
+
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stat-item strong {
+    font-size: 18px;
+  }
+
+  .members-container {
+    padding: 30px 5% 60px;
+  }
+
+  .members-section-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 15px;
+  }
+
+  .members-section-header h2 {
+    font-size: 23px;
+  }
+
+  .members-count {
+    align-self: flex-start;
+  }
+
+  .member-card-top {
+    padding: 22px 20px;
+  }
+
+  .member-photo-wrapper,
+  .member-photo,
+  .member-avatar {
+    width: 68px;
+    height: 68px;
+
+    flex-basis: 68px;
+  }
+
+  .member-basic h2 {
+    font-size: 18px;
+  }
+
+  .member-details {
+    padding: 5px 20px;
+  }
+
+  .member-detail {
+    grid-template-columns:
+      32px
+      100px
+      minmax(0, 1fr);
+
+    gap: 9px;
+
+    min-height: 55px;
+  }
+
+  .detail-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .member-card-footer {
+    padding: 14px 20px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 430px) {
+
+  .members-hero h1 {
+    font-size: 31px;
+  }
+
+  .hero-search {
+    flex-wrap: wrap;
+
+    padding: 5px;
+  }
+
+  .hero-search input {
+    min-width: 100px;
+  }
+
+  .hero-search button {
+    padding: 0 12px;
+  }
+
+  .members-statistics {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .stat-item {
+    padding: 5px 0;
+  }
+
+  .member-card-top {
+    gap: 13px;
+  }
+
+  .member-top-badges {
+    flex-wrap: wrap;
+  }
+
+  .member-detail {
+    grid-template-columns:
+      30px
+      85px
+      minmax(0, 1fr);
+
+    gap: 8px;
+  }
+
+  .detail-content span {
+    font-size: 8px;
+  }
+
+  .detail-content strong {
+    font-size: 11px;
+  }
+
+  .member-card-footer {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .party-mark {
+    align-self: flex-start;
+  }
+
+  .view-profile-button {
+    width: 100%;
+  }
+
+}

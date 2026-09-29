@@ -1,0 +1,433 @@
+.profile-page {
+  min-height: 100vh;
+  background: #f4f7fb;
+}
+
+.profile-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(5, 25, 58, 0.88) 0%,
+      rgba(8, 43, 88, 0.72) 38%,
+      rgba(8, 43, 88, 0.28) 68%,
+      rgba(5, 25, 58, 0.38) 100%
+    ),
+    url("https://upload.wikimedia.org/wikipedia/commons/9/95/Indian_national_Flag_waving_under_clear_blue_sky_on_Red_Fort%2C_Delhi.jpg")
+    center 42% / cover no-repeat;
+
+  padding: 55px 60px;
+  color: white;
+  min-height: 390px;
+  display: flex;
+  align-items: center;
+}
+
+.profile-hero::before {
+  content: "";
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  right: 27%;
+  top: 35px;
+  border-radius: 50%;
+  opacity: 0.24;
+
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 0 24px,
+      rgba(255, 255, 255, 0.85) 25px 28px,
+      transparent 29px
+    ),
+    repeating-conic-gradient(
+      from 0deg,
+      rgba(255, 255, 255, 0.9) 0deg 2deg,
+      transparent 2deg 15deg
+    );
+
+  border: 8px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.08),
+    0 0 45px rgba(255, 255, 255, 0.18);
+
+  pointer-events: none;
+}
+
+.profile-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(4, 24, 55, 0.72)
+    );
+
+  pointer-events: none;
+}
+
+.profile-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: auto;
+}
+
+.profile-breadcrumb {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 35px;
+  font-size: 14px;
+}
+
+.profile-breadcrumb a {
+  color: #dbe8ff;
+  text-decoration: none;
+}
+
+.profile-breadcrumb strong {
+  color: white;
+}
+
+.profile-hero-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #9fc5ff;
+  margin-bottom: 12px;
+}
+
+.profile-hero h1 {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.1;
+}
+
+.profile-hero h1 span {
+  color: #7eb6ff;
+}
+
+.profile-hero p {
+  max-width: 650px;
+  margin-top: 18px;
+  color: #d8e5f8;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 25px 60px;
+}
+
+.profile-main-card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 15px 45px rgba(12, 35, 70, 0.10);
+  overflow: hidden;
+}
+
+.profile-main-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 35px;
+}
+
+.profile-photo-area {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar,
+.profile-photo {
+  width: 130px;
+  height: 130px;
+  border-radius: 18px;
+}
+
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #123d76, #2466ae);
+  color: white;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.profile-photo {
+  object-fit: cover;
+  display: block;
+}
+
+.profile-status-dot {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #9aa4b2;
+  border: 3px solid white;
+}
+
+.profile-status-dot.active {
+  background: #20a464;
+}
+
+.profile-member-info {
+  flex: 1;
+}
+
+.profile-badges {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.profile-house-badge,
+.profile-active-badge,
+.profile-inactive-badge {
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-house-badge {
+  background: #e8f1ff;
+  color: #174b88;
+}
+
+.profile-active-badge {
+  background: #e7f7ef;
+  color: #167346;
+}
+
+.profile-inactive-badge {
+  background: #f1f3f5;
+  color: #667085;
+}
+
+.profile-member-info h2 {
+  margin: 0;
+  color: #14213d;
+  font-size: 32px;
+}
+
+.profile-member-id {
+  margin: 8px 0;
+  color: #667085;
+}
+
+.profile-party {
+  margin: 8px 0 0;
+  color: #315b8d;
+  font-weight: 600;
+}
+
+.profile-divider {
+  height: 1px;
+  background: #e8edf3;
+  margin: 0 35px;
+}
+
+.profile-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 35px 20px;
+}
+
+.profile-section-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #eaf2ff;
+  color: #18549a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.profile-section-heading span {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #6b7b91;
+  font-weight: 700;
+}
+
+.profile-section-heading h3 {
+  margin: 4px 0 0;
+  color: #182b49;
+  font-size: 21px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0 35px 30px;
+}
+
+.profile-item {
+  border: 1px solid #e7ecf2;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fbfcfe;
+  min-width: 0;
+}
+
+.profile-item span {
+  display: block;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-item strong {
+  display: block;
+  color: #172b4d;
+  font-size: 15px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.profile-address {
+  grid-column: span 2;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 35px 35px;
+}
+
+.profile-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: 10px;
+  background: #123d76;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.profile-back-button:hover {
+  background: #0b2d5c;
+  transform: translateY(-1px);
+}
+
+.profile-message {
+  max-width: 650px;
+  margin: 100px auto;
+  padding: 45px;
+  text-align: center;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(12, 35, 70, 0.10);
+}
+
+.profile-message h2 {
+  color: #172b4d;
+  margin-bottom: 10px;
+}
+
+.profile-message p {
+  color: #667085;
+}
+
+.profile-error-icon {
+  width: 55px;
+  height: 55px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #fff0f0;
+  color: #c0392b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.profile-spinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 20px;
+  border: 4px solid #e5edf7;
+  border-top-color: #1b5fa7;
+  border-radius: 50%;
+  animation: profile-spin 0.8s linear infinite;
+}
+
+@keyframes profile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-hero {
+    padding: 35px 22px;
+    min-height: 430px;
+  }
+
+  .profile-hero h1 {
+    font-size: 36px;
+  }
+
+  .profile-hero::before {
+    width: 120px;
+    height: 120px;
+    right: 8%;
+    top: 25px;
+  }
+
+  .profile-main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 25px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    padding: 0 25px 25px;
+  }
+
+  .profile-address {
+    grid-column: span 1;
+  }
+
+  .profile-divider {
+    margin: 0 25px;
+  }
+
+  .profile-section-heading {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .profile-actions {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+}
