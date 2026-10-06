@@ -24,6 +24,7 @@ import Proceedings from "./pages/Proceedings"
 import Attendance from "./pages/Attendance"
 import Documents from "./pages/Documents"
 import DocumentDetails from "./pages/DocumentDetails"
+import Notifications from "./pages/Notifications"
 
 
 /* =========================================================
@@ -2707,6 +2708,12 @@ function App() {
         <Route
           path="/documents"
           element={<Documents />}
+        />
+
+
+        <Route
+          path="/notifications"
+          element={<Notifications />}
         />
 
 

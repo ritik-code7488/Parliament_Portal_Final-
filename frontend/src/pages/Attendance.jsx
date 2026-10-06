@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Attendance.css";
+import API_BASE_URL from "../api";
 
 function Attendance() {
   const [attendance, setAttendance] = useState([]);
@@ -9,7 +10,7 @@ function Attendance() {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/attendance/attendance/")
+    fetch(`${API_BASE_URL}/api/attendance/attendance/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to load attendance data");

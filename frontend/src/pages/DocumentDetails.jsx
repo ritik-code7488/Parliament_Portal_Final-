@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
+import API_BASE_URL from "../api"
 
 
 function DocumentDetails() {
@@ -19,7 +20,7 @@ function DocumentDetails() {
     }
 
     fetch(
-      `http://127.0.0.1:8000/api/documents/documents/${documentId}/`
+      `${API_BASE_URL}/api/documents/documents/${documentId}/`
     )
       .then((response) => {
         if (!response.ok) {

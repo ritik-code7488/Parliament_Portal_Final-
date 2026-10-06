@@ -1,54 +1,42 @@
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Node
-node_modules/
-dist/
-dist-ssr/
-*.local
-
-# Python / Django
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
+*.pyd
 
-# Python virtual environments
+# Virtual environment
 venv/
 .venv/
+env/
+
+# Django
+*.sqlite3
+*.sqlite3-journal
+staticfiles/
 
 # Environment / secrets
 .env
 .env.*
+!.env.example
 
-# SQLite / local database
-*.sqlite3
-db.sqlite3
-db_backup_before_mssql.sqlite3
-sqlite_backup.json
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
 
-# SQL Server backup
-*.bak
-
-# Vite cache
-.vite/
-.vite-temp/
-
-# Editor
+# IDE
 .vscode/
 .idea/
-.DS_Store
-Thumbs.db
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
-# Build output
-frontend/dist/
+# OS
+Thumbs.db
+.DS_Store
+
+# Backup
+*_BACKUP*/
+
+# Project archives and database backups
+*.zip
+*.tar
+database/
+backend/sqlite_backup.json

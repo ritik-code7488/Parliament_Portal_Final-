@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import "./CommitteeDetails.css";
+import API_BASE_URL from "../api";
 
 function CommitteeDetails() {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ function CommitteeDetails() {
 
   useEffect(() => {
     fetch(
-      `http://127.0.0.1:8000/api/committees/committees/${committeeId}/`
+      `${API_BASE_URL}/api/committees/committees/${committeeId}/`
     )
       .then((response) => {
         if (!response.ok) {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import "./Members.css"
+import API_BASE_URL from "../api"
 
 function Members() {
   const [members, setMembers] = useState([])
@@ -14,7 +15,7 @@ function Members() {
     setLoading(true)
     setError("")
 
-    fetch("http://127.0.0.1:8000/api/members/members/")
+    fetch(`${API_BASE_URL}/api/members/members/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Members API could not be loaded")
@@ -45,7 +46,6 @@ function Members() {
         setLoading(false)
       })
   }
-
   useEffect(() => {
     loadMembers()
   }, [])
@@ -661,3 +661,5 @@ function Members() {
 }
 
 export default Members
+
+

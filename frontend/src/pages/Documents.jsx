@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import "./Documents.css"
+import API_BASE_URL from "../api"
 
 
 function Documents() {
@@ -13,7 +14,7 @@ function Documents() {
 
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/documents/documents/")
+    fetch(`${API_BASE_URL}/api/documents/documents/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Unable to load documents")

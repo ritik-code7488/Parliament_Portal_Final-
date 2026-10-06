@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import "./Committees.css"
+import API_BASE_URL from "../api"
 
 
 function Committees() {
@@ -12,7 +13,7 @@ function Committees() {
 
   useEffect(() => {
 
-    fetch("http://127.0.0.1:8000/api/committees/committees/")
+    fetch(`${API_BASE_URL}/api/committees/committees/`)
 
       .then((response) => {
 

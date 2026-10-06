@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import "./Bills.css"
+import API_BASE_URL from "../api"
 
 const demoBills = [
   {
@@ -79,7 +80,7 @@ function Bills() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/bills/")
+    fetch(`${API_BASE_URL}/api/bills/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Unable to fetch bills")
@@ -552,6 +553,7 @@ function Bills() {
           )}
 
         </section>
+
 
       </main>
 

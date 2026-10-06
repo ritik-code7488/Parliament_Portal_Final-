@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import "./BillDetails.css"
+import API_BASE_URL from "../api"
 
 const demoBills = [
   {
@@ -84,7 +85,7 @@ function BillDetails() {
       return
     }
 
-    fetch(`http://127.0.0.1:8000/api/bills/${billId}/`)
+    fetch(`${API_BASE_URL}/api/bills/${billId}/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Unable to fetch bill")
@@ -109,23 +110,10 @@ function BillDetails() {
       })
   }, [billId])
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Passed":
-        return "detail-status-passed"
-      case "Under Discussion":
-        return "detail-status-discussion"
-      case "Rejected":
-        return "detail-status-rejected"
-      case "Withdrawn":
-        return "detail-status-withdrawn"
-      default:
-        return "detail-status-introduced"
-    }
-  }
-
   const formatDate = (date) => {
-    if (!date) return "—"
+    if (!date) {
+      return "—"
+    }
 
     const parsedDate = new Date(date)
 
@@ -140,17 +128,45 @@ function BillDetails() {
     })
   }
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "Passed":
+        return "detail-status-passed"
+
+      case "Under Discussion":
+        return "detail-status-discussion"
+
+      case "Rejected":
+        return "detail-status-rejected"
+
+      case "Withdrawn":
+        return "detail-status-withdrawn"
+
+      default:
+        return "detail-status-introduced"
+    }
+  }
+
+  const isCurrentStatus = (status) => {
+    return String(bill?.status || "").toLowerCase() ===
+      String(status).toLowerCase()
+  }
+
   if (loading) {
     return (
       <div className="bill-details-page">
         <div className="bill-details-loading">
+
           <div className="detail-spinner"></div>
 
-          <h2>Loading Bill Details...</h2>
+          <h2>
+            Loading Bill Details...
+          </h2>
 
           <p>
             Fetching the selected legislative record.
           </p>
+
         </div>
       </div>
     )
@@ -159,6 +175,7 @@ function BillDetails() {
   if (!bill) {
     return (
       <div className="bill-details-page">
+
         <div className="bill-not-found">
 
           <div className="not-found-icon">
@@ -185,6 +202,31 @@ function BillDetails() {
           </Link>
 
         </div>
+
+        <footer className="bill-details-footer">
+
+          <div className="bill-details-footer-inner">
+
+            <div>
+
+              <strong>
+                🏛 Parliament Portal
+              </strong>
+
+              <p>
+                Digital Parliament Information System
+              </p>
+
+            </div>
+
+            <div className="details-footer-right">
+              © 2026 Parliament Portal • Demo Project
+            </div>
+
+          </div>
+
+        </footer>
+
       </div>
     )
   }
@@ -192,7 +234,9 @@ function BillDetails() {
   return (
     <div className="bill-details-page">
 
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+          ===================================================== */}
 
       <section className="bill-details-hero">
 
@@ -202,24 +246,25 @@ function BillDetails() {
             to="/bills"
             className="details-back-link"
           >
-            ← Back to Bills & Acts
+            ← Back to Bills
           </Link>
 
           <div className="details-eyebrow">
             <span></span>
-            LEGISLATIVE RECORD
+            PARLIAMENTARY LEGISLATION
           </div>
 
           <div className="details-bill-number">
-            {bill.bill_number}
+            {bill.bill_number || "BILL"}
           </div>
 
           <h1>
-            {bill.title}
+            {bill.title || "Bill Details"}
           </h1>
 
           <p>
-            Parliamentary legislative record and bill information.
+            Detailed information about this parliamentary legislative
+            proposal and its current status.
           </p>
 
         </div>
@@ -229,11 +274,16 @@ function BillDetails() {
       </section>
 
 
-      {/* MAIN */}
+      {/* =====================================================
+          MAIN
+          ===================================================== */}
 
       <main className="bill-details-main">
 
-        {/* STATUS */}
+
+        {/* ===================================================
+            STATUS CARD
+            =================================================== */}
 
         <section className="bill-status-card">
 
@@ -248,10 +298,11 @@ function BillDetails() {
                 bill.status
               )}`}
             >
-              {bill.status}
+              {bill.status || "Introduced"}
             </span>
 
           </div>
+
 
           <div className="status-house">
 
@@ -260,7 +311,7 @@ function BillDetails() {
             </span>
 
             <strong>
-              {bill.house}
+              {bill.house || "—"}
             </strong>
 
           </div>
@@ -268,18 +319,20 @@ function BillDetails() {
         </section>
 
 
-        {/* BILL INFORMATION */}
+        {/* ===================================================
+            INFORMATION
+            =================================================== */}
 
         <section className="bill-information-section">
 
           <div className="details-section-heading">
 
             <span>
-              BILL INFORMATION
+              LEGISLATIVE RECORD
             </span>
 
             <h2>
-              Legislative Details
+              Bill Information
             </h2>
 
           </div>
@@ -294,20 +347,7 @@ function BillDetails() {
               </span>
 
               <strong>
-                {bill.bill_number}
-              </strong>
-
-            </div>
-
-
-            <div className="information-card">
-
-              <span>
-                HOUSE
-              </span>
-
-              <strong>
-                {bill.house}
+                {bill.bill_number || "—"}
               </strong>
 
             </div>
@@ -338,23 +378,38 @@ function BillDetails() {
 
             </div>
 
+
+            <div className="information-card">
+
+              <span>
+                HOUSE
+              </span>
+
+              <strong>
+                {bill.house || "—"}
+              </strong>
+
+            </div>
+
           </div>
 
         </section>
 
 
-        {/* DESCRIPTION */}
+        {/* ===================================================
+            DESCRIPTION
+            =================================================== */}
 
         <section className="bill-description-section">
 
           <div className="details-section-heading">
 
             <span>
-              ABOUT THE BILL
+              LEGISLATIVE SUMMARY
             </span>
 
             <h2>
-              Description
+              About This Bill
             </h2>
 
           </div>
@@ -363,17 +418,18 @@ function BillDetails() {
           <div className="description-card">
 
             <div className="description-icon">
-              ▤
+              §
             </div>
 
             <div>
 
               <h3>
-                {bill.title}
+                {bill.title || "Bill Details"}
               </h3>
 
               <p>
-                {bill.description}
+                {bill.description ||
+                  "No description is currently available for this legislative record."}
               </p>
 
             </div>
@@ -383,18 +439,20 @@ function BillDetails() {
         </section>
 
 
-        {/* TIMELINE */}
+        {/* ===================================================
+            TIMELINE
+            =================================================== */}
 
         <section className="bill-timeline-section">
 
           <div className="details-section-heading">
 
             <span>
-              LEGISLATIVE PROGRESS
+              LEGISLATIVE PROCESS
             </span>
 
             <h2>
-              Bill Status
+              Bill Status Timeline
             </h2>
 
           </div>
@@ -402,10 +460,19 @@ function BillDetails() {
 
           <div className="timeline-card">
 
-            <div className="timeline-item active">
+
+            <div
+              className={`timeline-item ${
+                isCurrentStatus("Introduced") ||
+                bill.status === "Under Discussion" ||
+                bill.status === "Passed"
+                  ? "active"
+                  : ""
+              }`}
+            >
 
               <div className="timeline-dot">
-                ✓
+                1
               </div>
 
               <div>
@@ -425,7 +492,7 @@ function BillDetails() {
 
             <div
               className={`timeline-item ${
-                bill.status === "Under Discussion" ||
+                isCurrentStatus("Under Discussion") ||
                 bill.status === "Passed"
                   ? "active"
                   : ""
@@ -443,7 +510,7 @@ function BillDetails() {
                 </strong>
 
                 <span>
-                  Parliamentary consideration
+                  Parliamentary consideration and discussion
                 </span>
 
               </div>
@@ -453,7 +520,7 @@ function BillDetails() {
 
             <div
               className={`timeline-item ${
-                bill.status === "Passed"
+                isCurrentStatus("Passed")
                   ? "active"
                   : ""
               }`}
@@ -470,19 +537,22 @@ function BillDetails() {
                 </strong>
 
                 <span>
-                  Legislative approval
+                  Legislative approval stage
                 </span>
 
               </div>
 
             </div>
 
+
           </div>
 
         </section>
 
 
-        {/* BACK BUTTON */}
+        {/* ===================================================
+            BOTTOM ACTION
+            =================================================== */}
 
         <div className="details-bottom-action">
 
@@ -498,7 +568,9 @@ function BillDetails() {
       </main>
 
 
-      {/* FOOTER */}
+      {/* =====================================================
+          FOOTER
+          ===================================================== */}
 
       <footer className="bill-details-footer">
 
