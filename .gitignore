@@ -40,3 +40,5 @@ Thumbs.db
 *.tar
 database/
 backend/sqlite_backup.json
+
+backend/local_data_backup.json

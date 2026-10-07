@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -115,32 +116,47 @@ TEMPLATES = [
 # DATABASE
 # ==============================
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mssql',
-        'NAME': os.environ.get(
-            'DB_NAME',
-            'ParliamentPortalDB'
-        ),
-        'HOST': os.environ.get(
-            'DB_HOST',
-            r'.\SQLEXPRESS'
-        ),
-        'USER': os.environ.get('DB_USER', ''),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'OPTIONS': {
-            'driver': os.environ.get(
-                'DB_DRIVER',
-                'ODBC Driver 18 for SQL Server'
-            ),
-            'Trusted_Connection': os.environ.get(
-                'DB_TRUSTED_CONNECTION',
-                'yes'
-            ),
-            'extra_params': 'TrustServerCertificate=yes;',
-        },
+# Render PostgreSQL
+# Local computer MSSQL
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mssql',
+            'NAME': os.environ.get(
+                'DB_NAME',
+                'ParliamentPortalDB'
+            ),
+            'HOST': os.environ.get(
+                'DB_HOST',
+                r'.\SQLEXPRESS'
+            ),
+            'USER': os.environ.get('DB_USER', ''),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'OPTIONS': {
+                'driver': os.environ.get(
+                    'DB_DRIVER',
+                    'ODBC Driver 18 for SQL Server'
+                ),
+                'Trusted_Connection': os.environ.get(
+                    'DB_TRUSTED_CONNECTION',
+                    'yes'
+                ),
+                'extra_params': 'TrustServerCertificate=yes;',
+            },
+        }
+    }
 
 
 # ==============================
