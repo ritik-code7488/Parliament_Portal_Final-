@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import API_BASE_URL from "./api"
 import "./Header.css"
 import "./App.css"
 
@@ -40,7 +41,7 @@ function Header() {
 
   useEffect(() => {
 
-    fetch("http://127.0.0.1:8000/api/members/members/")
+    fetch(`${API_BASE_URL}/api/members/members/`)
 
       .then((response) => {
 
@@ -1711,7 +1712,7 @@ function Dashboard() {
         setNotificationError("")
 
         const response = await fetch(
-          "http://127.0.0.1:8000/api/notifications/notifications/"
+          `${API_BASE_URL}/api/notifications/notifications/`
         )
 
         if (!response.ok) {
@@ -2158,7 +2159,7 @@ function ProceedingDetails() {
 
 
     fetch(
-      `http://127.0.0.1:8000/api/proceedings/proceedings/${proceedingId}/`
+      `${API_BASE_URL}/api/proceedings/proceedings/${proceedingId}/`
     )
 
       .then((response) => {
