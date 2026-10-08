@@ -1,3 +1,4 @@
+﻿import API_BASE_URL from "../api"
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Questions.css";
@@ -99,7 +100,7 @@ function Questions() {
   const [statusFilter, setStatusFilter] = useState("All Status");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/questions/questions/")
+    fetch("${API_BASE_URL}/api/questions/questions/")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Questions API request failed");
@@ -199,7 +200,7 @@ function Questions() {
       <section className="questions-stats">
 
         <div className="question-stat-card">
-          <div className="question-stat-icon">▤</div>
+          <div className="question-stat-icon">â–¤</div>
           <div>
             <span>Total Questions</span>
             <strong>{totalQuestions}</strong>
@@ -207,7 +208,7 @@ function Questions() {
         </div>
 
         <div className="question-stat-card">
-          <div className="question-stat-icon">✓</div>
+          <div className="question-stat-icon">âœ“</div>
           <div>
             <span>Answered</span>
             <strong>{answeredQuestions}</strong>
@@ -215,7 +216,7 @@ function Questions() {
         </div>
 
         <div className="question-stat-card">
-          <div className="question-stat-icon">◉</div>
+          <div className="question-stat-icon">â—‰</div>
           <div>
             <span>Pending</span>
             <strong>{pendingQuestions}</strong>
@@ -223,7 +224,7 @@ function Questions() {
         </div>
 
         <div className="question-stat-card">
-          <div className="question-stat-icon">★</div>
+          <div className="question-stat-icon">â˜…</div>
           <div>
             <span>Starred</span>
             <strong>{starredQuestions}</strong>
@@ -254,7 +255,7 @@ function Questions() {
         <div className="questions-filters">
 
           <div className="question-search-box">
-            <span>⌕</span>
+            <span>âŒ•</span>
 
             <input
               type="text"
@@ -391,7 +392,7 @@ function Questions() {
                     className="question-details-button"
                   >
                     View Details
-                    <span>→</span>
+                    <span>â†’</span>
                   </Link>
 
                 </div>

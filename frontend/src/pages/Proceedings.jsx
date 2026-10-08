@@ -1,3 +1,4 @@
+﻿import API_BASE_URL from "../api"
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Proceedings.css";
@@ -12,7 +13,7 @@ function Proceedings() {
   const [statusFilter, setStatusFilter] = useState("All Status");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/proceedings/proceedings/")
+    fetch("${API_BASE_URL}/api/proceedings/proceedings/")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Proceedings API request failed");
@@ -112,7 +113,7 @@ function Proceedings() {
       <section className="proceedings-stats">
 
         <div className="proceeding-stat-card">
-          <div className="proceeding-stat-icon">▤</div>
+          <div className="proceeding-stat-icon">â–¤</div>
 
           <div>
             <span>Total Proceedings</span>
@@ -121,7 +122,7 @@ function Proceedings() {
         </div>
 
         <div className="proceeding-stat-card">
-          <div className="proceeding-stat-icon">✓</div>
+          <div className="proceeding-stat-icon">âœ“</div>
 
           <div>
             <span>Published</span>
@@ -171,7 +172,7 @@ function Proceedings() {
         <div className="proceedings-filters">
 
           <div className="proceeding-search-box">
-            <span>⌕</span>
+            <span>âŒ•</span>
 
             <input
               type="text"
@@ -299,7 +300,7 @@ function Proceedings() {
                     className="proceeding-details-button"
                   >
                     View Details
-                    <span>→</span>
+                    <span>â†’</span>
                   </Link>
 
                 </div>

@@ -1,3 +1,4 @@
+﻿import API_BASE_URL from "../api"
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import "./QuestionDetails.css";
@@ -35,7 +36,7 @@ function QuestionDetails() {
     }
 
     fetch(
-      `http://127.0.0.1:8000/api/questions/questions/${questionId}/`
+      `${API_BASE_URL}/api/questions/questions/${questionId}/`
     )
       .then((response) => {
         if (!response.ok) {
@@ -79,7 +80,7 @@ function QuestionDetails() {
         </p>
 
         <Link to="/questions">
-          ← Back to Questions
+          â† Back to Questions
         </Link>
       </div>
     );
@@ -106,7 +107,7 @@ function QuestionDetails() {
             to="/questions"
             className="question-back-link"
           >
-            ← Back to Questions
+            â† Back to Questions
           </Link>
 
           <div className="question-details-eyebrow">
@@ -184,7 +185,7 @@ function QuestionDetails() {
           <div className="official-answer">
 
             <div className="answer-icon">
-              ✓
+              âœ“
             </div>
 
             <div className="answer-content">
