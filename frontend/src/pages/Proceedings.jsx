@@ -13,7 +13,7 @@ function Proceedings() {
   const [statusFilter, setStatusFilter] = useState("All Status");
 
   useEffect(() => {
-    fetch("${API_BASE_URL}/api/proceedings/proceedings/")
+    fetch(`${API_BASE_URL}/api/proceedings/proceedings/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Proceedings API request failed");
