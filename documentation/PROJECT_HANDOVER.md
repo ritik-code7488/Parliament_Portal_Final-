@@ -66,8 +66,17 @@ Parliament_Portal_Final/
   - PROJECT_HANDOVER.md
 - .gitignore
 - README.md
+- START_ALL.bat (1-Click Master Launcher)
 
-## 7. Backend Setup
+## 6.1 Quick Start (Recommended - 1-Click)
+
+Double-click `START_ALL.bat` in the project root directory.
+This automatically:
+1. Launches the Django backend on `http://127.0.0.1:8000/`
+2. Launches the React Vite frontend on `http://localhost:5173/`
+3. Automatically opens the portal in your default web browser!
+
+## 7. Manual Backend Setup
 
 Open PowerShell in:
 
@@ -103,7 +112,10 @@ npm install
 
 Start the frontend:
 
-npm run dev
+```powershell
+npm.cmd run dev
+# (or 'npm run dev')
+```
 
 Frontend URL:
 

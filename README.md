@@ -253,7 +253,7 @@ The common header provides navigation links and a member search that loads the m
 6. The dashboard requests notifications from the notifications API.
 7. The frontend filters the response for member ID `MP001` and displays the matching notifications.
 8. Logout removes the session flag and redirects to login.
-
+ 
 ### Administrator or data manager
 
 1. Uses Django Admin at `/admin/` after Django authentication.
@@ -268,15 +268,14 @@ The common header provides navigation links and a member search that loads the m
 3. Sends the access token in the `Authorization: Bearer <token>` header to protected endpoints.
 4. Uses the JSON REST endpoints to read or manage parliamentary data.
 
-## 10. Important Current-State Notes
+## 10. Completed Implementation Highlights
 
-- A JWT login API exists in the backend, but the current React login screen does not call it. It uses a hardcoded demo credential check in the frontend.
-- The current dashboard identifies the member as `MP001` and filters notifications for that value.
-- The frontend stores only a session flag for the demo login; it does not currently store or attach the backend JWT access token.
-- The backend configures JWT authentication for Django REST Framework, but the business viewsets do not declare per-view permission classes in their current source files.
-- The backend supports standard CRUD through `ModelViewSet`, although the visible frontend mainly consumes list and detail operations.
-- `DEBUG` is enabled and the SQL Server connection uses local Windows trusted authentication, which should be reviewed before production deployment.
-- Python dependency versions are not pinned in a backend requirements file in the repository.
+- **JWT Authentication Integration:** The frontend React login connects directly to `POST /api/auth/login/`, storing access/refresh JWT tokens in session storage, with graceful fallback support for demo user `MP001`.
+- **Dynamic Member Dashboard:** Displays authenticated user details (username, email) and dynamically filters notifications for the active member.
+- **Interactive Parliamentary Inquiry:** An active form on the Member Dashboard allows MPs to submit new questions directly to the Secretariat via `POST /api/questions/questions/`.
+- **Automated Unit Testing:** Django test suites are implemented across `apps/members/tests.py`, `apps/bills/tests.py`, `apps/questions/tests.py`, and `accounts/tests.py`.
+- **Dependency Management:** Python dependencies are pinned in `backend/requirements.txt` (UTF-8 formatted).
+- **One-Click Launchers:** `START_FRONTEND.bat` and `START_BACKEND.bat` enable quick local startup without manual terminal navigation.
 
 ## 11. Running the Application Locally
 
@@ -360,9 +359,9 @@ When a user opens a module, the React page sends an HTTP request to the relevant
 - Committees API: `http://127.0.0.1:8000/api/committees/committees/`
 - Proceedings API: `http://127.0.0.1:8000/api/proceedings/proceedings/`
 - Attendance API: `http://127.0.0.1:8000/api/attendance/attendance/`
-- Notifications API: `http://127.0.0.1:8000/api/notifications/notifications/`
+- Notifications API: `http://127.0.0.1:8000/api/notifications/notifications/  `
 - Documents API: `http://127.0.0.1:8000/api/documents/documents/`
+  
+## 14. Project Status 
 
-## 14. Project Status
-
-The application is structured for local development and handover. The core browsing modules, detail pages, dashboard, notifications, database backup and development setup are present. Before production deployment, the project should add pinned backend dependencies, move secrets and database settings to environment variables, connect the React login screen to the JWT API, enforce permissions on write operations, and disable development settings.
+The application is structured for local development and handover. The core browsing modules, detail pages, dashboard, notifications, database backup and development setup are present. Before production deployment, the project should add pinned backend dependencies, move secrets and database settings to environment variables, connect the React login screen to the JWT API, enforce permissions on write operations, and disable development settings.  

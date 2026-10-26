@@ -263,14 +263,17 @@ function Home() {
 
           {/* DIGITAL ACCESS */}
 
-          <div className="home-module-card">
+          <Link
+            to="/documents"
+            className="home-module-card"
+          >
 
             <div className="home-module-number">
               06
             </div>
 
             <div className="home-module-icon">
-              ✓
+              📄
             </div>
 
             <h3>
@@ -278,15 +281,15 @@ function Home() {
             </h3>
 
             <p>
-              Access parliamentary information
-              anytime through the digital portal.
+              Access parliamentary documents,
+              gazettes and official records 24/7.
             </p>
 
             <span className="home-module-arrow">
-              Available 24/7
+              View Documents →
             </span>
 
-          </div>
+          </Link>
 
 
         </div>

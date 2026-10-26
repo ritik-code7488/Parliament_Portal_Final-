@@ -120,6 +120,7 @@ TEMPLATES = [
 # Local computer MSSQL
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
+USE_SQLITE = os.environ.get('USE_SQLITE', '').lower() in ('1', 'true', 'yes')
 
 if DATABASE_URL:
     DATABASES = {
@@ -130,33 +131,50 @@ if DATABASE_URL:
         )
     }
 
-else:
+elif USE_SQLITE or not (os.environ.get('DB_ENGINE') == 'mssql' or os.environ.get('USE_MSSQL', '1') == '1'):
     DATABASES = {
         'default': {
-            'ENGINE': 'mssql',
-            'NAME': os.environ.get(
-                'DB_NAME',
-                'ParliamentPortalDB'
-            ),
-            'HOST': os.environ.get(
-                'DB_HOST',
-                r'.\SQLEXPRESS'
-            ),
-            'USER': os.environ.get('DB_USER', ''),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'OPTIONS': {
-                'driver': os.environ.get(
-                    'DB_DRIVER',
-                    'ODBC Driver 18 for SQL Server'
-                ),
-                'Trusted_Connection': os.environ.get(
-                    'DB_TRUSTED_CONNECTION',
-                    'yes'
-                ),
-                'extra_params': 'TrustServerCertificate=yes;',
-            },
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+else:
+    try:
+        import mssql
+        DATABASES = {
+            'default': {
+                'ENGINE': 'mssql',
+                'NAME': os.environ.get(
+                    'DB_NAME',
+                    'ParliamentPortalDB'
+                ),
+                'HOST': os.environ.get(
+                    'DB_HOST',
+                    r'.\SQLEXPRESS'
+                ),
+                'USER': os.environ.get('DB_USER', ''),
+                'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+                'OPTIONS': {
+                    'driver': os.environ.get(
+                        'DB_DRIVER',
+                        'ODBC Driver 18 for SQL Server'
+                    ),
+                    'Trusted_Connection': os.environ.get(
+                        'DB_TRUSTED_CONNECTION',
+                        'yes'
+                    ),
+                    'extra_params': 'TrustServerCertificate=yes;',
+                },
+            }
+        }
+    except ImportError:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 
 # ==============================
@@ -234,6 +252,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5174',
     'http://127.0.0.1:5174',
 ]
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 FRONTEND_URL = os.environ.get('FRONTEND_URL')
 

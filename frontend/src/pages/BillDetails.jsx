@@ -80,21 +80,29 @@ function BillDetails() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let cancelled = false
+
     if (!billId) {
+      setBill(null)
       setLoading(false)
-      return
+      return () => {
+        cancelled = true
+      }
     }
 
-    fetch(`${API_BASE_URL}/api/bills/${billId}/`)
+    setLoading(true)
+
+    fetch(`${API_BASE_URL}/api/bills/bills/${billId}/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Unable to fetch bill")
         }
-
         return response.json()
       })
       .then((data) => {
-        setBill(data)
+        if (!cancelled) {
+          setBill(data)
+        }
       })
       .catch((error) => {
         console.error("Bill details API error:", error)
@@ -103,17 +111,23 @@ function BillDetails() {
           (item) => String(item.id) === String(billId)
         )
 
-        setBill(demoBill || null)
+        if (!cancelled) {
+          setBill(demoBill || null)
+        }
       })
       .finally(() => {
-        setLoading(false)
+        if (!cancelled) {
+          setLoading(false)
+        }
       })
+
+    return () => {
+      cancelled = true
+    }
   }, [billId])
 
   const formatDate = (date) => {
-    if (!date) {
-      return "—"
-    }
+    if (!date) return "—"
 
     const parsedDate = new Date(date)
 
@@ -132,41 +146,28 @@ function BillDetails() {
     switch (status) {
       case "Passed":
         return "detail-status-passed"
-
       case "Under Discussion":
         return "detail-status-discussion"
-
       case "Rejected":
         return "detail-status-rejected"
-
       case "Withdrawn":
         return "detail-status-withdrawn"
-
       default:
         return "detail-status-introduced"
     }
   }
 
-  const isCurrentStatus = (status) => {
-    return String(bill?.status || "").toLowerCase() ===
-      String(status).toLowerCase()
-  }
+  const isCurrentStatus = (status) =>
+    String(bill?.status || "").toLowerCase() ===
+    String(status).toLowerCase()
 
   if (loading) {
     return (
       <div className="bill-details-page">
         <div className="bill-details-loading">
-
           <div className="detail-spinner"></div>
-
-          <h2>
-            Loading Bill Details...
-          </h2>
-
-          <p>
-            Fetching the selected legislative record.
-          </p>
-
+          <h2>Loading Bill Details...</h2>
+          <p>Fetching the selected legislative record.</p>
         </div>
       </div>
     )
@@ -175,77 +176,38 @@ function BillDetails() {
   if (!bill) {
     return (
       <div className="bill-details-page">
-
         <div className="bill-not-found">
-
-          <div className="not-found-icon">
-            !
-          </div>
-
-          <span>
-            LEGISLATIVE RECORD
-          </span>
-
-          <h1>
-            Bill Not Found
-          </h1>
-
+          <div className="not-found-icon">!</div>
+          <span>LEGISLATIVE RECORD</span>
+          <h1>Bill Not Found</h1>
           <p>
             The requested bill could not be found in the Parliament Portal.
           </p>
-
-          <Link
-            to="/bills"
-            className="back-to-bills"
-          >
+          <Link to="/bills" className="back-to-bills">
             ← Back to Bills
           </Link>
-
         </div>
 
         <footer className="bill-details-footer">
-
           <div className="bill-details-footer-inner">
-
             <div>
-
-              <strong>
-                🏛 Parliament Portal
-              </strong>
-
-              <p>
-                Digital Parliament Information System
-              </p>
-
+              <strong>🏛 Parliament Portal</strong>
+              <p>Digital Parliament Information System</p>
             </div>
-
             <div className="details-footer-right">
               © 2026 Parliament Portal • Demo Project
             </div>
-
           </div>
-
         </footer>
-
       </div>
     )
   }
 
   return (
     <div className="bill-details-page">
-
-      {/* =====================================================
-          HERO
-          ===================================================== */}
-
       <section className="bill-details-hero">
-
         <div className="bill-details-hero-content">
-
-          <Link
-            to="/bills"
-            className="details-back-link"
-          >
+          <Link to="/bills" className="details-back-link">
             ← Back to Bills
           </Link>
 
@@ -258,209 +220,87 @@ function BillDetails() {
             {bill.bill_number || "BILL"}
           </div>
 
-          <h1>
-            {bill.title || "Bill Details"}
-          </h1>
-
+          <h1>{bill.title || "Bill Details"}</h1>
           <p>
             Detailed information about this parliamentary legislative
             proposal and its current status.
           </p>
-
         </div>
 
         <div className="details-hero-pattern"></div>
-
       </section>
 
-
-      {/* =====================================================
-          MAIN
-          ===================================================== */}
-
       <main className="bill-details-main">
-
-
-        {/* ===================================================
-            STATUS CARD
-            =================================================== */}
-
         <section className="bill-status-card">
-
           <div className="bill-status-main">
-
-            <span className="detail-label">
-              CURRENT STATUS
-            </span>
-
+            <span className="detail-label">CURRENT STATUS</span>
             <span
-              className={`detail-status ${getStatusClass(
-                bill.status
-              )}`}
+              className={`detail-status ${getStatusClass(bill.status)}`}
             >
               {bill.status || "Introduced"}
             </span>
-
           </div>
-
 
           <div className="status-house">
-
-            <span className="detail-label">
-              HOUSE
-            </span>
-
-            <strong>
-              {bill.house || "—"}
-            </strong>
-
+            <span className="detail-label">HOUSE</span>
+            <strong>{bill.house || "—"}</strong>
           </div>
-
         </section>
-
-
-        {/* ===================================================
-            INFORMATION
-            =================================================== */}
 
         <section className="bill-information-section">
-
           <div className="details-section-heading">
-
-            <span>
-              LEGISLATIVE RECORD
-            </span>
-
-            <h2>
-              Bill Information
-            </h2>
-
+            <span>LEGISLATIVE RECORD</span>
+            <h2>Bill Information</h2>
           </div>
-
 
           <div className="bill-information-grid">
-
             <div className="information-card">
-
-              <span>
-                BILL NUMBER
-              </span>
-
-              <strong>
-                {bill.bill_number || "—"}
-              </strong>
-
+              <span>BILL NUMBER</span>
+              <strong>{bill.bill_number || "—"}</strong>
             </div>
 
-
             <div className="information-card">
-
-              <span>
-                INTRODUCED BY
-              </span>
-
-              <strong>
-                {bill.introduced_by || "—"}
-              </strong>
-
+              <span>INTRODUCED BY</span>
+              <strong>{bill.introduced_by || "—"}</strong>
             </div>
 
-
             <div className="information-card">
-
-              <span>
-                INTRODUCTION DATE
-              </span>
-
-              <strong>
-                {formatDate(bill.introduction_date)}
-              </strong>
-
+              <span>INTRODUCTION DATE</span>
+              <strong>{formatDate(bill.introduction_date)}</strong>
             </div>
 
-
             <div className="information-card">
-
-              <span>
-                HOUSE
-              </span>
-
-              <strong>
-                {bill.house || "—"}
-              </strong>
-
+              <span>HOUSE</span>
+              <strong>{bill.house || "—"}</strong>
             </div>
-
           </div>
-
         </section>
 
-
-        {/* ===================================================
-            DESCRIPTION
-            =================================================== */}
-
         <section className="bill-description-section">
-
           <div className="details-section-heading">
-
-            <span>
-              LEGISLATIVE SUMMARY
-            </span>
-
-            <h2>
-              About This Bill
-            </h2>
-
+            <span>LEGISLATIVE SUMMARY</span>
+            <h2>About This Bill</h2>
           </div>
 
-
           <div className="description-card">
-
-            <div className="description-icon">
-              §
-            </div>
-
+            <div className="description-icon">§</div>
             <div>
-
-              <h3>
-                {bill.title || "Bill Details"}
-              </h3>
-
+              <h3>{bill.title || "Bill Details"}</h3>
               <p>
                 {bill.description ||
                   "No description is currently available for this legislative record."}
               </p>
-
             </div>
-
           </div>
-
         </section>
 
-
-        {/* ===================================================
-            TIMELINE
-            =================================================== */}
-
         <section className="bill-timeline-section">
-
           <div className="details-section-heading">
-
-            <span>
-              LEGISLATIVE PROCESS
-            </span>
-
-            <h2>
-              Bill Status Timeline
-            </h2>
-
+            <span>LEGISLATIVE PROCESS</span>
+            <h2>Bill Status Timeline</h2>
           </div>
 
-
           <div className="timeline-card">
-
-
             <div
               className={`timeline-item ${
                 isCurrentStatus("Introduced") ||
@@ -470,25 +310,12 @@ function BillDetails() {
                   : ""
               }`}
             >
-
-              <div className="timeline-dot">
-                1
-              </div>
-
+              <div className="timeline-dot">1</div>
               <div>
-
-                <strong>
-                  Bill Introduced
-                </strong>
-
-                <span>
-                  {formatDate(bill.introduction_date)}
-                </span>
-
+                <strong>Bill Introduced</strong>
+                <span>{formatDate(bill.introduction_date)}</span>
               </div>
-
             </div>
-
 
             <div
               className={`timeline-item ${
@@ -498,104 +325,48 @@ function BillDetails() {
                   : ""
               }`}
             >
-
-              <div className="timeline-dot">
-                2
-              </div>
-
+              <div className="timeline-dot">2</div>
               <div>
-
-                <strong>
-                  Under Discussion
-                </strong>
-
+                <strong>Under Discussion</strong>
                 <span>
                   Parliamentary consideration and discussion
                 </span>
-
               </div>
-
             </div>
-
 
             <div
               className={`timeline-item ${
-                isCurrentStatus("Passed")
-                  ? "active"
-                  : ""
+                isCurrentStatus("Passed") ? "active" : ""
               }`}
             >
-
-              <div className="timeline-dot">
-                3
-              </div>
-
+              <div className="timeline-dot">3</div>
               <div>
-
-                <strong>
-                  Passed
-                </strong>
-
-                <span>
-                  Legislative approval stage
-                </span>
-
+                <strong>Passed</strong>
+                <span>Legislative approval stage</span>
               </div>
-
             </div>
-
-
           </div>
-
         </section>
 
-
-        {/* ===================================================
-            BOTTOM ACTION
-            =================================================== */}
-
         <div className="details-bottom-action">
-
-          <Link
-            to="/bills"
-            className="details-back-button"
-          >
+          <Link to="/bills" className="details-back-button">
             ← Back to Bills & Acts
           </Link>
-
         </div>
-
       </main>
 
-
-      {/* =====================================================
-          FOOTER
-          ===================================================== */}
-
       <footer className="bill-details-footer">
-
         <div className="bill-details-footer-inner">
-
           <div>
-
-            <strong>
-              🏛 Parliament Portal
-            </strong>
-
-            <p>
-              Digital Parliament Information System
-            </p>
-
+            <strong>🏛 Parliament Portal</strong>
+            <p>Digital Parliament Information System</p>
           </div>
 
           <div className="details-footer-right">
             © 2026 Parliament Portal • Demo Project
           </div>
-
         </div>
-
       </footer>
-
     </div>
   )
 }

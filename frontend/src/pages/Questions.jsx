@@ -1,4 +1,4 @@
-﻿import API_BASE_URL from "../api"
+import API_BASE_URL from "../api"
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Questions.css";
@@ -100,7 +100,7 @@ function Questions() {
   const [statusFilter, setStatusFilter] = useState("All Status");
 
   useEffect(() => {
-    fetch("${API_BASE_URL}/api/questions/questions/")
+    fetch(`${API_BASE_URL}/api/questions/questions/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Questions API request failed");

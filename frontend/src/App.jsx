@@ -1463,10 +1463,13 @@ function Home() {
           </Link>
 
 
-          <div className="portal-module-card">
+          <Link
+            to="/documents"
+            className="portal-module-card"
+          >
 
             <div className="portal-module-icon">
-              🌐
+              📄
             </div>
 
 
@@ -1484,19 +1487,19 @@ function Home() {
 
               <p>
 
-                Parliamentary information available
-                through a unified digital platform.
+                Parliamentary documents, gazettes,
+                and official records available through digital platform.
 
               </p>
 
 
               <span className="portal-card-link">
-                Digital Parliament
+                View Documents →
               </span>
 
             </div>
 
-          </div>
+          </Link>
 
 
         </div>
@@ -1552,36 +1555,72 @@ function Login() {
   const [userId, setUserId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
 
     event.preventDefault()
 
     setError("")
+    setLoading(true)
 
+    // 1. Attempt Real Backend JWT Authentication
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: userId.trim(),
+          password: password,
+        }),
+      })
 
-    if (
-      userId === "MP001" &&
-      password === "12345"
-    ) {
+      const data = await response.json()
 
-      sessionStorage.setItem(
-        "memberLoggedIn",
-        "true"
-      )
+      if (response.ok && data.success) {
+        sessionStorage.setItem("memberLoggedIn", "true")
+        sessionStorage.setItem("accessToken", data.access)
+        sessionStorage.setItem("refreshToken", data.refresh)
+        sessionStorage.setItem("user", JSON.stringify(data.user))
+        sessionStorage.setItem("memberId", data.user?.username || userId)
 
-      navigate(
-        "/dashboard",
-        { replace: true }
-      )
+        setLoading(false)
+        navigate("/dashboard", { replace: true })
+        return
+      } else if (response.status === 400 || response.status === 401 || response.status === 403) {
+        // If server rejected credentials, allow demo MP001 if provided
+        if (userId.trim().toUpperCase() === "MP001" && password === "12345") {
+          sessionStorage.setItem("memberLoggedIn", "true")
+          sessionStorage.setItem("user", JSON.stringify({ username: "MP001", email: "mp001@parliament.nic.in" }))
+          sessionStorage.setItem("memberId", "MP001")
 
+          setLoading(false)
+          navigate("/dashboard", { replace: true })
+          return
+        }
+
+        setError(data.message || "Invalid User ID or Password")
+        setLoading(false)
+        return
+      }
+    } catch (apiError) {
+      console.warn("Backend auth unavailable, trying demo fallback:", apiError)
+    }
+
+    // 2. Demo fallback if server is offline or user is MP001 demo
+    if (userId.trim().toUpperCase() === "MP001" && password === "12345") {
+      sessionStorage.setItem("memberLoggedIn", "true")
+      sessionStorage.setItem("user", JSON.stringify({ username: "MP001", email: "mp001@parliament.nic.in" }))
+      sessionStorage.setItem("memberId", "MP001")
+
+      setLoading(false)
+      navigate("/dashboard", { replace: true })
     } else {
-
-      setError(
-        "Invalid User ID or Password"
-      )
-
+      setError("Invalid User ID or Password")
+      setLoading(false)
     }
 
   }
@@ -1611,7 +1650,7 @@ function Login() {
 
 
           <label>
-            User ID
+            User ID / Username
           </label>
 
 
@@ -1621,7 +1660,8 @@ function Login() {
             onChange={(event) =>
               setUserId(event.target.value)
             }
-            placeholder="Enter User ID"
+            placeholder="e.g. MP001 or admin"
+            required
           />
 
 
@@ -1637,6 +1677,7 @@ function Login() {
               setPassword(event.target.value)
             }
             placeholder="Enter Password"
+            required
           />
 
 
@@ -1652,9 +1693,10 @@ function Login() {
           <button
             type="submit"
             className="primary-button"
+            disabled={loading}
           >
 
-            Login
+            {loading ? "Logging in..." : "Login"}
 
           </button>
 
@@ -1679,10 +1721,19 @@ function Dashboard() {
 
   const navigate = useNavigate()
 
+  const [currentUser, setCurrentUser] = useState(null)
   const [notifications, setNotifications] = useState([])
   const [notificationLoading, setNotificationLoading] = useState(true)
   const [notificationError, setNotificationError] = useState("")
 
+  // Interactive Question Form State
+  const [showQuestionModal, setShowQuestionModal] = useState(false)
+  const [questionSubject, setQuestionSubject] = useState("")
+  const [questionText, setQuestionText] = useState("")
+  const [questionHouse, setQuestionHouse] = useState("Lok Sabha")
+  const [questionType, setQuestionType] = useState("Starred")
+  const [submittingQuestion, setSubmittingQuestion] = useState(false)
+  const [submissionFeedback, setSubmissionFeedback] = useState("")
 
   useEffect(() => {
 
@@ -1696,7 +1747,17 @@ function Dashboard() {
         "/login",
         { replace: true }
       )
+      return
 
+    }
+
+    try {
+      const stored = sessionStorage.getItem("user")
+      if (stored) {
+        setCurrentUser(JSON.parse(stored))
+      }
+    } catch (e) {
+      console.error("Error reading stored user:", e)
     }
 
   }, [navigate])
@@ -1724,13 +1785,15 @@ function Dashboard() {
         }
 
         const data = await response.json()
-
+        const currentMemberId = sessionStorage.getItem("memberId") || "MP001"
 
         const memberNotifications = Array.isArray(data)
           ? data.filter(
-              (notification) =>
-                notification.member_id === "MP001"
-            )
+            (notification) =>
+              !notification.member_id ||
+              notification.member_id === currentMemberId ||
+              notification.member_id === "MP001"
+          )
           : []
 
 
@@ -1765,9 +1828,11 @@ function Dashboard() {
 
   const handleLogout = () => {
 
-    sessionStorage.removeItem(
-      "memberLoggedIn"
-    )
+    sessionStorage.removeItem("memberLoggedIn")
+    sessionStorage.removeItem("accessToken")
+    sessionStorage.removeItem("refreshToken")
+    sessionStorage.removeItem("user")
+    sessionStorage.removeItem("memberId")
 
     navigate(
       "/login",
@@ -1775,6 +1840,69 @@ function Dashboard() {
     )
 
   }
+
+  const handleQuestionSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!questionSubject.trim() || !questionText.trim()) {
+      setSubmissionFeedback("Please enter the subject and full question.");
+      return;
+    }
+
+    setSubmittingQuestion(true);
+    setSubmissionFeedback("");
+
+    const payload = {
+      question_number: `Q-${Date.now()}`,
+      subject: questionSubject.trim(),
+      question_text: questionText.trim(),
+      asked_by: currentUser?.username || "Hon'ble Member",
+      house: questionHouse,
+      question_type: questionType,
+      date: new Date().toISOString().split("T")[0],
+      status: "Pending",
+      answer: "",
+    };
+
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      const headers = { "Content-Type": "application/json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const response = await fetch(`${API_BASE_URL}/api/questions/questions/`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      let data = {};
+      try { data = await response.json(); } catch { data = {}; }
+
+      if (!response.ok) {
+        const details = data.detail || data.message ||
+          Object.values(data).flat().join(" ") ||
+          `Server returned HTTP ${response.status}.`;
+        setSubmissionFeedback(`Submission failed: ${details}`);
+        return;
+      }
+
+      setSubmissionFeedback("Question submitted successfully. The server accepted the record.");
+      setQuestionSubject("");
+      setQuestionText("");
+      setQuestionHouse("Lok Sabha");
+      setQuestionType("Starred");
+
+      window.setTimeout(() => {
+        setShowQuestionModal(false);
+        setSubmissionFeedback("");
+      }, 2500);
+    } catch (error) {
+      console.error("Question submission error:", error);
+      setSubmissionFeedback("Could not connect to the server. Please check your connection and try again.");
+    } finally {
+      setSubmittingQuestion(false);
+    }
+  };
 
 
   return (
@@ -1885,10 +2013,63 @@ function Dashboard() {
           font-size: 13px;
         }
 
+        .member-action-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 15px;
+          margin: 20px 0;
+          padding: 16px 20px;
+          background: #f0f6ff;
+          border: 1px solid #d4e3f8;
+          border-radius: 12px;
+          text-align: left;
+        }
+
+        .action-button {
+          background: #195797;
+          color: #fff;
+          border: none;
+          padding: 10px 18px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .action-button:hover {
+          background: #124375;
+        }
+
+        .question-modal-box {
+          background: #ffffff;
+          border: 1px solid #d9e3f0;
+          border-radius: 12px;
+          padding: 22px;
+          margin-bottom: 25px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+          text-align: left;
+        }
+
+        .modal-form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+          margin-bottom: 12px;
+        }
+
         @media (max-width: 600px) {
 
           .dashboard-notification-card-top {
             flex-direction: column;
+          }
+          .member-action-bar {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+          .modal-form-grid {
+            grid-template-columns: 1fr;
           }
 
         }
@@ -1910,8 +2091,132 @@ function Dashboard() {
 
 
         <p>
-          Welcome, Demo Member One
+          Welcome, {currentUser?.username || "Demo Member One"}
+          {currentUser?.email && ` (${currentUser.email})`}
         </p>
+
+        {/* MP Action Banner */}
+        <div className="member-action-bar">
+          <div>
+            <strong style={{ display: "block", color: "#14325c", fontSize: "15px" }}>
+              Parliamentary Inquiry & Notices
+            </strong>
+            <span style={{ fontSize: "12px", color: "#607289" }}>
+              Submit a formal parliamentary question or check session notifications.
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="action-button"
+            onClick={() => setShowQuestionModal(!showQuestionModal)}
+          >
+            {showQuestionModal ? "✕ Close Form" : "＋ Submit Question"}
+          </button>
+        </div>
+
+        {/* Interactive "Ask Question" Form */}
+        {showQuestionModal && (
+          <form className="question-modal-box" onSubmit={handleQuestionSubmit}>
+            <h3 style={{ margin: "0 0 15px", color: "#172e4f", fontSize: "17px" }}>
+              Submit Question to Parliament Secretariat
+            </h3>
+
+            <div className="modal-form-grid">
+              <div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                  House
+                </label>
+                <select
+                  value={questionHouse}
+                  onChange={(e) => setQuestionHouse(e.target.value)}
+                  style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                >
+                  <option value="Lok Sabha">Lok Sabha</option>
+                  <option value="Rajya Sabha">Rajya Sabha</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                  Question Type
+                </label>
+                <select
+                  value={questionType}
+                  onChange={(e) => setQuestionType(e.target.value)}
+                  style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                >
+                  <option value="Starred">Starred (Oral Answer)</option>
+                  <option value="Unstarred">Unstarred (Written Answer)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "12px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                Subject / Topic
+              </label>
+              <input
+                type="text"
+                value={questionSubject}
+                onChange={(e) => setQuestionSubject(e.target.value)}
+                placeholder="e.g. Facilities for Rural Healthcare & Infrastructure"
+                required
+                style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                Full Question Text
+              </label>
+              <textarea
+                value={questionText}
+                onChange={(e) => setQuestionText(e.target.value)}
+                placeholder="State the detailed question to be asked to the concerned ministry..."
+                rows="3"
+                required
+                style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+              ></textarea>
+            </div>
+
+            {submissionFeedback && (
+              <div
+                role="status"
+                style={{
+                  padding: "10px",
+                  marginBottom: "14px",
+                  borderRadius: "8px",
+                  background:
+                    submissionFeedback.startsWith("Submission failed") ||
+                      submissionFeedback.startsWith("Could not connect") ||
+                      submissionFeedback.startsWith("Please enter")
+                      ? "#fff1f1"
+                      : "#e8f8ee",
+                  color:
+                    submissionFeedback.startsWith("Submission failed") ||
+                      submissionFeedback.startsWith("Could not connect") ||
+                      submissionFeedback.startsWith("Please enter")
+                      ? "#b42318"
+                      : "#166534",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}
+              >
+                {submissionFeedback}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="action-button"
+              disabled={submittingQuestion}
+              style={{ background: "#107c41" }}
+            >
+              {submittingQuestion ? "Submitting..." : "Submit to Secretariat ↗"}
+            </button>
+          </form>
+        )}
 
 
         <div className="dashboard-grid">
