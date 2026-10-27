@@ -303,13 +303,13 @@ function Home() {
           inset: 0;
 
           background-image:
-            url("/images/red-fort-hero.jpg");
+            url("/images/parliament-hero-bg.jpg");
 
           background-size: cover;
-          background-position: center bottom;
+          background-position: right center;
 
           transform: scale(1.01);
-          filter: brightness(0.94) contrast(1.04);
+          filter: brightness(0.96) contrast(1.04);
         }
 
         .portal-hero-overlay {
@@ -319,10 +319,10 @@ function Home() {
           background:
             linear-gradient(
               90deg,
-              rgba(3, 18, 45, 0.96) 0%,
-              rgba(5, 26, 60, 0.90) 32%,
-              rgba(6, 33, 70, 0.60) 56%,
-              rgba(6, 33, 70, 0.20) 76%,
+              rgba(3, 18, 45, 0.97) 0%,
+              rgba(5, 26, 60, 0.92) 34%,
+              rgba(6, 33, 70, 0.62) 58%,
+              rgba(6, 33, 70, 0.18) 78%,
               rgba(2, 14, 34, 0.35) 100%
             );
         }
@@ -357,21 +357,157 @@ function Home() {
 
         .portal-chakra {
           position: absolute;
-          width: 420px;
-          height: 420px;
-          right: 7%;
-          top: 42%;
+          width: 440px;
+          height: 440px;
+          right: 6%;
+          top: 48%;
           transform: translateY(-50%);
           border-radius: 50%;
           pointer-events: none;
           z-index: 2;
-          opacity: 0.26;
-          filter: drop-shadow(0 0 45px rgba(147, 197, 253, 0.4));
+          opacity: 0.18;
+          filter: drop-shadow(0 0 45px rgba(147, 197, 253, 0.35));
           background-repeat: no-repeat;
           background-position: center;
           background-size: contain;
           animation: slowChakraSpin 200s linear infinite;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3CradialGradient id='hubGlow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.9'/%3E%3Cstop offset='70%25' stop-color='%23ffffff' stop-opacity='0.5'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Ccircle cx='200' cy='200' r='192' stroke-width='6' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='180' stroke-width='2.5' stroke-dasharray='3.5 19.5' stroke-linecap='round' stroke-opacity='0.8'/%3E%3Ccircle cx='200' cy='200' r='165' stroke-width='3.5' stroke-opacity='0.85'/%3E%3Ccircle cx='200' cy='200' r='38' fill='url(%23hubGlow)' stroke-width='4' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='15' fill='%23ffffff' stroke='none'/%3E%3C/g%3E%3Cg stroke='%23ffffff' stroke-width='2.2' stroke-opacity='0.85' stroke-linecap='round'%3E%3Cline x1='200' y1='200' x2='200' y2='35'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='40.6'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='365' y2='200'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='200' y2='365'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='35' y2='200'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='40.6'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes float3DParliament {
+          0%, 100% {
+            transform: translateY(0px) rotateY(-11deg) rotateX(5deg) translateZ(12px);
+          }
+          50% {
+            transform: translateY(-12px) rotateY(-7deg) rotateX(2deg) translateZ(26px);
+          }
+        }
+
+        @keyframes shadowPulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.55;
+          }
+          50% {
+            transform: scale(0.88);
+            opacity: 0.30;
+          }
+        }
+
+        @keyframes sheenPass {
+          0% {
+            transform: translateX(-150%) skewX(-25deg);
+          }
+          28%, 100% {
+            transform: translateX(250%) skewX(-25deg);
+          }
+        }
+
+        .portal-3d-showcase {
+          position: absolute;
+          right: 5%;
+          top: 48%;
+          transform: translateY(-50%);
+          width: 500px;
+          max-width: 42vw;
+          z-index: 4;
+          perspective: 1400px;
+          pointer-events: auto;
+          cursor: pointer;
+        }
+
+        .portal-3d-card {
+          position: relative;
+          width: 100%;
+          border-radius: 20px;
+          padding: 10px;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.04) 100%
+          );
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          box-shadow:
+            0 25px 60px rgba(2, 10, 28, 0.75),
+            0 0 50px rgba(56, 189, 248, 0.24),
+            inset 0 1px 1px rgba(255, 255, 255, 0.5);
+          backdrop-filter: blur(14px);
+          transform-style: preserve-3d;
+          animation: float3DParliament 6s ease-in-out infinite;
+          transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+          overflow: hidden;
+        }
+
+        .portal-3d-card:hover {
+          transform: translateY(-8px) rotateY(-4deg) rotateX(2deg) scale(1.02);
+          box-shadow:
+            0 35px 80px rgba(2, 10, 28, 0.9),
+            0 0 70px rgba(56, 189, 248, 0.45),
+            inset 0 1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .portal-3d-monument-img {
+          display: block;
+          width: 100%;
+          height: auto;
+          border-radius: 14px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+          filter: contrast(1.06) brightness(1.02);
+        }
+
+        .portal-3d-sheen {
+          position: absolute;
+          inset: 0;
+          width: 60%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.22),
+            transparent
+          );
+          animation: sheenPass 7s ease-in-out infinite;
+          pointer-events: none;
+        }
+
+        .portal-3d-badge {
+          position: absolute;
+          bottom: 20px;
+          left: 22px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 14px;
+          border-radius: 30px;
+          background: rgba(4, 18, 42, 0.88);
+          border: 1px solid rgba(255, 255, 255, 0.24);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(8px);
+          color: #f1f5f9;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+
+        .portal-3d-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #10b981;
+          box-shadow: 0 0 10px #10b981;
+        }
+
+        .portal-3d-shadow {
+          width: 82%;
+          height: 22px;
+          margin: 12px auto 0;
+          border-radius: 50%;
+          background: radial-gradient(
+            ellipse at center,
+            rgba(0, 0, 0, 0.65) 0%,
+            transparent 70%
+          );
+          filter: blur(10px);
+          animation: shadowPulse 6s ease-in-out infinite;
         }
 
         .portal-hero-content {
@@ -942,6 +1078,10 @@ function Home() {
             opacity: 0.15;
           }
 
+          .portal-3d-showcase {
+            display: none;
+          }
+
         }
 
         @media (max-width: 750px) {
@@ -1064,6 +1204,22 @@ function Home() {
         <div className="portal-hero-overlay"></div>
 
         <div className="portal-chakra"></div>
+
+        <div className="portal-3d-showcase">
+          <div className="portal-3d-card" title="Samvidhan Sadan • Parliament of India">
+            <img 
+              src="/images/parliament-monument-3d.png" 
+              alt="Indian Parliament House - Samvidhan Sadan" 
+              className="portal-3d-monument-img"
+            />
+            <div className="portal-3d-sheen"></div>
+            <div className="portal-3d-badge">
+              <span className="portal-3d-dot"></span>
+              <span>Samvidhan Sadan • Parliament of India</span>
+            </div>
+          </div>
+          <div className="portal-3d-shadow"></div>
+        </div>
 
         <div className="portal-hero-content">
 
