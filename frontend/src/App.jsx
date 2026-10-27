@@ -345,80 +345,32 @@ function Home() {
           pointer-events: none;
         }
 
+        @keyframes slowChakraSpin {
+          from {
+            transform: translateY(-50%) rotate(0deg);
+          }
+          to {
+            transform: translateY(-50%) rotate(360deg);
+          }
+        }
+
         .portal-chakra {
           position: absolute;
-
-          width: 300px;
-          height: 300px;
-
-          right: 12%;
+          width: 380px;
+          height: 380px;
+          right: 9%;
           top: 50%;
-
-          transform:
-            translateY(-50%);
-
+          transform: translateY(-50%);
           border-radius: 50%;
-
-          border:
-            9px solid
-            rgba(255,255,255,0.45);
-
-          opacity: 0.28;
-
-          box-shadow:
-            0 0 0 12px
-            rgba(255,255,255,0.05),
-
-            0 0 55px
-            rgba(255,255,255,0.12);
-        }
-
-        .portal-chakra::before {
-          content: "";
-
-          position: absolute;
-
-          inset: 22px;
-
-          border-radius: 50%;
-
-          border:
-            4px solid
-            rgba(255,255,255,0.5);
-        }
-
-        .portal-chakra::after {
-          content: "";
-
-          position: absolute;
-
-          width: 28px;
-          height: 28px;
-
-          left: 50%;
-          top: 50%;
-
-          transform:
-            translate(-50%, -50%);
-
-          border-radius: 50%;
-
-          background:
-            rgba(255,255,255,0.75);
-
-          box-shadow:
-
-            0 -105px 0 -9px
-            rgba(255,255,255,0.65),
-
-            0 105px 0 -9px
-            rgba(255,255,255,0.65),
-
-            105px 0 0 -9px
-            rgba(255,255,255,0.65),
-
-            -105px 0 0 -9px
-            rgba(255,255,255,0.65);
+          pointer-events: none;
+          z-index: 2;
+          opacity: 0.24;
+          filter: drop-shadow(0 0 40px rgba(147, 197, 253, 0.35));
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+          animation: slowChakraSpin 200s linear infinite;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3CradialGradient id='hubGlow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.9'/%3E%3Cstop offset='70%25' stop-color='%23ffffff' stop-opacity='0.5'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Ccircle cx='200' cy='200' r='192' stroke-width='6' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='180' stroke-width='2.5' stroke-dasharray='3.5 19.5' stroke-linecap='round' stroke-opacity='0.8'/%3E%3Ccircle cx='200' cy='200' r='165' stroke-width='3.5' stroke-opacity='0.85'/%3E%3Ccircle cx='200' cy='200' r='38' fill='url(%23hubGlow)' stroke-width='4' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='15' fill='%23ffffff' stroke='none'/%3E%3C/g%3E%3Cg stroke='%23ffffff' stroke-width='2.2' stroke-opacity='0.85' stroke-linecap='round'%3E%3Cline x1='200' y1='200' x2='200' y2='35'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='40.6'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='365' y2='200'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='200' y2='365'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='35' y2='200'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='40.6'/%3E%3C/g%3E%3C/svg%3E");
         }
 
         .portal-hero-content {
