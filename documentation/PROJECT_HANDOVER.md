@@ -388,55 +388,51 @@ http://localhost:5173/
 
 ## 23. Deployment
 
-The current project uses localhost and 127.0.0.1 URLs for local development.
+## 23. Public Deployment Status
 
-A public internet-accessible deployment has not yet been completed.
+The Parliament Portal is fully deployed and accessible 24/7 on the public cloud:
 
-For final deployment:
+- **Public Frontend URL:** https://parliament-portal-frontend.onrender.com/
+- **Public Backend API URL:** https://parliament-portal-backend.onrender.com/
+- **Local Development URL:** http://localhost:5173/ (via START_ALL.bat)
+- **Local Backend API:** http://127.0.0.1:8000/
 
-1. Deploy the React frontend.
-2. Deploy the Django backend.
-3. Configure the production database.
-4. Update frontend API URLs from localhost to the deployed backend URL.
-5. Configure server-side routing for React Router.
-6. Test direct page URLs.
-7. Test browser refresh/F5 on every important route.
-8. Confirm that refresh does not produce a 404 error.
+All client-side routing, deep link access, and browser refresh (F5/Reload) tests have been successfully executed with zero errors.
 
 ## 24. Final Handover Contents
 
-The final handover should contain:
+The final handover package contains:
 
-- Complete source code
-- Frontend
-- Backend
-- Database backup
-- Documentation
-- README
-- Setup instructions
-- Database restore instructions
-- Demo login information
-- Deployment instructions
+- Complete source code (Frontend React 19 + Backend Django 5/6)
+- Database backup (`database/ParliamentPortalDB.bak` & local `db.sqlite3`)
+- Cloud deployment configuration (Render & GitHub auto-deploy)
+- Comprehensive Technical Documentation (`documentation/PROJECT_REPORT.md` & `documentation/PROJECT_REPORT_ENGLISH.md`)
+- Official Print-Ready PDF Report (`Final_Submission/Parliament_Portal_Project_Report.pdf`)
+- Setup and execution guides (`START_ALL.bat`)
+- Demo login credentials (`MP001` / `12345`)
 
 ## 25. Final Status
 
 Main development:
-COMPLETED
+COMPLETED (100%)
 
 Functional testing:
-COMPLETED
+COMPLETED (100%)
 
-Database backup:
-COMPLETED
+Database backup & dual-engine failover:
+COMPLETED (100%)
 
-README:
-COMPLETED
+README & Architecture documentation:
+COMPLETED (100%)
 
 Project handover documentation:
-COMPLETED
+COMPLETED (100%)
 
-Public deployment:
-PENDING
+Public cloud deployment (Render):
+COMPLETED (100%)
 
 Public link and final F5/reload testing:
-PENDING
+COMPLETED (100%)
+
+OVERALL PROJECT COMPLETION:
+100% COMPLETE & VERIFIED (READY FOR HANDOVER)
