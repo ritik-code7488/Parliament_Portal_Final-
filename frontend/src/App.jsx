@@ -1079,9 +1079,17 @@ function Home() {
           }
 
           .portal-3d-showcase {
-            display: none;
+            width: 400px;
+            right: 2%;
+            opacity: 0.95;
           }
 
+        }
+
+        @media (max-width: 860px) {
+          .portal-3d-showcase {
+            display: none;
+          }
         }
 
         @media (max-width: 750px) {
