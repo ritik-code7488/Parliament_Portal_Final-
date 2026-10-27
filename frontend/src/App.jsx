@@ -303,12 +303,13 @@ function Home() {
           inset: 0;
 
           background-image:
-            url("https://upload.wikimedia.org/wikipedia/commons/9/95/Indian_national_Flag_waving_under_clear_blue_sky_on_Red_Fort%2C_Delhi.jpg");
+            url("/images/red-fort-hero.jpg");
 
           background-size: cover;
-          background-position: center center;
+          background-position: center bottom;
 
-          transform: scale(1.02);
+          transform: scale(1.01);
+          filter: brightness(0.94) contrast(1.04);
         }
 
         .portal-hero-overlay {
@@ -318,11 +319,11 @@ function Home() {
           background:
             linear-gradient(
               90deg,
-              rgba(3, 18, 45, 0.98) 0%,
-              rgba(5, 28, 62, 0.94) 28%,
-              rgba(7, 39, 79, 0.78) 52%,
-              rgba(7, 39, 79, 0.38) 78%,
-              rgba(2, 15, 35, 0.58) 100%
+              rgba(3, 18, 45, 0.96) 0%,
+              rgba(5, 26, 60, 0.90) 32%,
+              rgba(6, 33, 70, 0.60) 56%,
+              rgba(6, 33, 70, 0.20) 76%,
+              rgba(2, 14, 34, 0.35) 100%
             );
         }
 
@@ -334,12 +335,12 @@ function Home() {
           right: 0;
           bottom: 0;
 
-          height: 130px;
+          height: 90px;
 
           background:
             linear-gradient(
               transparent,
-              rgba(3, 18, 45, 0.78)
+              rgba(3, 18, 45, 0.65)
             );
 
           pointer-events: none;
@@ -356,16 +357,16 @@ function Home() {
 
         .portal-chakra {
           position: absolute;
-          width: 380px;
-          height: 380px;
-          right: 9%;
-          top: 50%;
+          width: 420px;
+          height: 420px;
+          right: 7%;
+          top: 42%;
           transform: translateY(-50%);
           border-radius: 50%;
           pointer-events: none;
           z-index: 2;
-          opacity: 0.24;
-          filter: drop-shadow(0 0 40px rgba(147, 197, 253, 0.35));
+          opacity: 0.26;
+          filter: drop-shadow(0 0 45px rgba(147, 197, 253, 0.4));
           background-repeat: no-repeat;
           background-position: center;
           background-size: contain;
