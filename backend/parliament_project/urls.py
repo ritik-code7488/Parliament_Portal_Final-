@@ -18,6 +18,8 @@ def api_root_view(request):
             "documents": "/api/documents/documents/",
             "notifications": "/api/notifications/notifications/",
             "auth_login": "/api/auth/login/",
+            "auth_register": "/api/auth/register/",
+            "auth_users": "/api/auth/users/",
         }
     })
 

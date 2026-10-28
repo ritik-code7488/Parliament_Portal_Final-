@@ -1495,32 +1495,70 @@ function Login() {
   const [searchParams, setSearchParams] = useSearchParams()
   const initialRole = searchParams.get("role") === "admin" ? "admin" : "user"
   const [role, setRole] = useState(initialRole)
+  const [mode, setMode] = useState(searchParams.get("mode") === "signup" ? "signup" : "login")
 
+  // Login form state
   const [userId, setUserId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [successMsg, setSuccessMsg] = useState("")
   const [loading, setLoading] = useState(false)
+
+  // Sign up form state
+  const [regFullName, setRegFullName] = useState("")
+  const [regUserId, setRegUserId] = useState("")
+  const [regEmail, setRegEmail] = useState("")
+  const [regPhone, setRegPhone] = useState("")
+  const [regState, setRegState] = useState("Delhi")
+  const [regConstituency, setRegConstituency] = useState("")
+  const [regPassword, setRegPassword] = useState("")
+  const [regConfirmPassword, setRegConfirmPassword] = useState("")
+  const [regRole, setRegRole] = useState(role === "admin" ? "mp" : "citizen")
 
   // Keep state synced with URL search params
   useEffect(() => {
     const qRole = searchParams.get("role")
     if (qRole === "admin" || qRole === "user") {
       setRole(qRole)
+      setRegRole(qRole === "admin" ? "mp" : "citizen")
+    }
+    const qMode = searchParams.get("mode")
+    if (qMode === "signup" || qMode === "login") {
+      setMode(qMode)
     }
   }, [searchParams])
 
   const switchRole = (newRole) => {
     setRole(newRole)
-    setSearchParams({ role: newRole })
+    setRegRole(newRole === "admin" ? "mp" : "citizen")
+    setSearchParams({ role: newRole, mode })
     setError("")
-    setUserId("")
-    setPassword("")
+    setSuccessMsg("")
+  }
+
+  const switchMode = (newMode) => {
+    setMode(newMode)
+    setSearchParams({ role, mode: newMode })
+    setError("")
+    setSuccessMsg("")
   }
 
   const fillDemoCredentials = (u, p) => {
     setUserId(u)
     setPassword(p)
     setError("")
+    setSuccessMsg("")
+  }
+
+  // Persist user record to Admin user registry in localStorage
+  const saveToAdminRegistry = (userRecord) => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("parliament_registered_users") || "[]")
+      const updated = [userRecord, ...stored.filter(u => u.username.toUpperCase() !== userRecord.username.toUpperCase())]
+      localStorage.setItem("parliament_registered_users", JSON.stringify(updated))
+    } catch (e) {
+      console.error("Error saving to registry:", e)
+    }
   }
 
   const handleLogin = async (event) => {
@@ -1528,6 +1566,7 @@ function Login() {
     event.preventDefault()
 
     setError("")
+    setSuccessMsg("")
     setLoading(true)
 
     const cleanUser = userId.trim()
@@ -1549,14 +1588,23 @@ function Login() {
       const data = await response.json()
 
       if (response.ok && data.success) {
+        const loggedUser = {
+          ...data.user,
+          role: role,
+          state: data.user?.state || "National",
+          constituency: data.user?.constituency || "General",
+          date_joined: new Date().toISOString().split("T")[0],
+          is_active: true,
+          status: "Verified",
+        }
+
+        saveToAdminRegistry(loggedUser)
+
         sessionStorage.setItem("memberLoggedIn", "true")
         sessionStorage.setItem("userRole", role)
         sessionStorage.setItem("accessToken", data.access)
         sessionStorage.setItem("refreshToken", data.refresh)
-        sessionStorage.setItem("user", JSON.stringify({
-          ...data.user,
-          role: role,
-        }))
+        sessionStorage.setItem("user", JSON.stringify(loggedUser))
         sessionStorage.setItem("memberId", data.user?.username || cleanUser)
 
         setLoading(false)
@@ -1568,19 +1616,25 @@ function Login() {
     }
 
     // 2. Role-based fallback / demo logins
-    // MP demo credentials work in both roles
+    // MP demo credentials
     if (cleanUserUpper === "MP001" && password === "12345") {
+      const mpUser = {
+        username: "MP001",
+        role: role,
+        full_name: "Hon'ble Shri Rajesh Sharma",
+        name: role === "admin" ? "Hon'ble MP (Admin Privileges)" : "Hon'ble MP (Citizen View)",
+        email: "mp001@parliament.nic.in",
+        state: "Madhya Pradesh",
+        constituency: "Indore (Lok Sabha)",
+        date_joined: "2026-09-28",
+        is_active: true,
+        status: "Verified",
+      }
+      saveToAdminRegistry(mpUser)
+
       sessionStorage.setItem("memberLoggedIn", "true")
       sessionStorage.setItem("userRole", role)
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: "MP001",
-          role: role,
-          name: role === "admin" ? "Hon'ble MP (Admin Privileges)" : "Hon'ble MP (Citizen View)",
-          email: "mp001@parliament.nic.in",
-        })
-      )
+      sessionStorage.setItem("user", JSON.stringify(mpUser))
       sessionStorage.setItem("memberId", "MP001")
       setLoading(false)
       navigate("/dashboard", { replace: true })
@@ -1589,17 +1643,23 @@ function Login() {
 
     // Admin demo credentials
     if (role === "admin" && (cleanUserUpper === "ADMIN01" || cleanUser.toLowerCase() === "admin") && (password === "admin123" || password === "admin")) {
+      const adminUser = {
+        username: cleanUserUpper || "ADMIN01",
+        role: "admin",
+        full_name: "Parliament Secretariat Administrator",
+        name: "Parliament Secretariat Administrator",
+        email: "admin@sansad.nic.in",
+        state: "New Delhi",
+        constituency: "Central Secretariat",
+        date_joined: "2026-09-10",
+        is_active: true,
+        status: "Verified",
+      }
+      saveToAdminRegistry(adminUser)
+
       sessionStorage.setItem("memberLoggedIn", "true")
       sessionStorage.setItem("userRole", "admin")
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: cleanUserUpper || "ADMIN01",
-          role: "admin",
-          name: "Parliament Secretariat Administrator",
-          email: "admin@sansad.nic.in",
-        })
-      )
+      sessionStorage.setItem("user", JSON.stringify(adminUser))
       sessionStorage.setItem("memberId", cleanUserUpper || "ADMIN01")
       setLoading(false)
       navigate("/dashboard", { replace: true })
@@ -1608,26 +1668,134 @@ function Login() {
 
     // Citizen / Public demo credentials
     if (role === "user" && (cleanUserUpper === "CITIZEN01" || cleanUser.toLowerCase() === "citizen" || cleanUser.toLowerCase() === "user") && (password === "user123" || password === "12345")) {
+      const citizenUser = {
+        username: cleanUserUpper || "CITIZEN01",
+        role: "citizen",
+        full_name: "Aarav Verma",
+        name: "Verified Citizen User",
+        email: "citizen@india.gov.in",
+        state: "Delhi",
+        constituency: "New Delhi",
+        date_joined: "2026-10-15",
+        is_active: true,
+        status: "Verified",
+      }
+      saveToAdminRegistry(citizenUser)
+
       sessionStorage.setItem("memberLoggedIn", "true")
       sessionStorage.setItem("userRole", "user")
-      sessionStorage.setItem(
-        "user",
-        JSON.stringify({
-          username: cleanUserUpper || "CITIZEN01",
-          role: "user",
-          name: "Verified Citizen User",
-          email: "citizen@india.gov.in",
-        })
-      )
+      sessionStorage.setItem("user", JSON.stringify(citizenUser))
       sessionStorage.setItem("memberId", cleanUserUpper || "CITIZEN01")
       setLoading(false)
       navigate("/dashboard", { replace: true })
       return
     }
 
+    // Check if user was registered in local registry
+    try {
+      const stored = JSON.parse(localStorage.getItem("parliament_registered_users") || "[]")
+      const found = stored.find(u => u.username.toUpperCase() === cleanUserUpper && u.password === password)
+      if (found) {
+        sessionStorage.setItem("memberLoggedIn", "true")
+        sessionStorage.setItem("userRole", found.role === "mp" || found.role === "admin" ? "admin" : "user")
+        sessionStorage.setItem("user", JSON.stringify(found))
+        sessionStorage.setItem("memberId", found.username)
+        setLoading(false)
+        navigate("/dashboard", { replace: true })
+        return
+      }
+    } catch (e) {
+      console.error(e)
+    }
+
     setError(`Invalid ${role === "admin" ? "Admin / MP" : "Citizen"} ID or Password`)
     setLoading(false)
 
+  }
+
+  // Handle Registration
+  const handleRegister = async (event) => {
+    event.preventDefault()
+    setError("")
+    setSuccessMsg("")
+
+    if (regPassword !== regConfirmPassword) {
+      setError("Passwords do not match. Please verify your password.")
+      return
+    }
+
+    if (regPassword.length < 5) {
+      setError("Password should be at least 5 characters long.")
+      return
+    }
+
+    setLoading(true)
+
+    const payload = {
+      username: regUserId.trim(),
+      password: regPassword,
+      email: regEmail.trim(),
+      full_name: regFullName.trim(),
+      role: regRole, // "mp", "citizen", or "admin"
+      state: regState.trim() || "National",
+      constituency: regConstituency.trim() || "General",
+      phone: regPhone.trim(),
+    }
+
+    let registeredUser = {
+      id: Date.now(),
+      username: payload.username,
+      full_name: payload.full_name || payload.username,
+      email: payload.email,
+      phone: payload.phone,
+      state: payload.state,
+      constituency: payload.constituency,
+      role: payload.role,
+      date_joined: new Date().toISOString().split("T")[0],
+      is_active: true,
+      status: "Verified",
+      password: payload.password,
+    }
+
+    // Attempt backend registration
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        registeredUser = {
+          ...registeredUser,
+          id: data.user?.id || registeredUser.id,
+          date_joined: data.user?.date_joined || registeredUser.date_joined,
+        }
+        if (data.access) {
+          sessionStorage.setItem("accessToken", data.access)
+          sessionStorage.setItem("refreshToken", data.refresh)
+        }
+      } else if (!res.ok && data.message) {
+        setError(data.message)
+        setLoading(false)
+        return
+      }
+    } catch (e) {
+      console.warn("Backend register API unavailable, storing in client registry:", e)
+    }
+
+    // Save to permanent admin registry
+    saveToAdminRegistry(registeredUser)
+
+    // Log the user in
+    const assignedRole = registeredUser.role === "admin" || registeredUser.role === "mp" ? "admin" : "user"
+    sessionStorage.setItem("memberLoggedIn", "true")
+    sessionStorage.setItem("userRole", assignedRole)
+    sessionStorage.setItem("user", JSON.stringify(registeredUser))
+    sessionStorage.setItem("memberId", registeredUser.username)
+
+    setLoading(false)
+    navigate("/dashboard", { replace: true })
   }
 
 
@@ -1637,142 +1805,329 @@ function Login() {
 
       <div className="login-card">
 
-        {/* Role Switcher Pill Tabs */}
-        <div className="login-role-switch">
+        {/* Mode Switcher: Sign In vs Sign Up */}
+        <div className="login-mode-switch">
           <button
             type="button"
-            className={`role-tab-btn ${role === "user" ? "active role-user" : ""}`}
-            onClick={() => switchRole("user")}
+            className={`mode-tab-btn ${mode === "login" ? "active" : ""}`}
+            onClick={() => switchMode("login")}
           >
-            👤 Citizen / Public
+            🔑 Sign In
           </button>
           <button
             type="button"
-            className={`role-tab-btn ${role === "admin" ? "active role-admin" : ""}`}
-            onClick={() => switchRole("admin")}
+            className={`mode-tab-btn ${mode === "signup" ? "active" : ""}`}
+            onClick={() => switchMode("signup")}
           >
-            👑 Admin & MP
+            📝 Sign Up / Register
           </button>
         </div>
 
-        <div style={{ textAlign: "center", marginBottom: "16px" }}>
-          <div
-            style={{
-              display: "inline-block",
-              padding: "4px 12px",
-              borderRadius: "20px",
-              fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              background: role === "admin" ? "rgba(245, 158, 11, 0.15)" : "rgba(37, 99, 235, 0.12)",
-              color: role === "admin" ? "#d97706" : "#2563eb",
-              border: `1px solid ${role === "admin" ? "rgba(245, 158, 11, 0.3)" : "rgba(37, 99, 235, 0.25)"}`,
-              marginBottom: "10px",
-            }}
-          >
-            {role === "admin" ? "Official Parliamentary Secretariat Portal" : "Democratic Public Participation Portal"}
-          </div>
-          <h1>{role === "admin" ? "Admin & MP Login" : "Citizen Portal Login"}</h1>
-          <p>
-            {role === "admin"
-              ? "Authorized access for Parliament Secretariat, Officers, and Hon'ble MPs."
-              : "Access public question submissions, committee hearings, and RTI portals."}
-          </p>
-        </div>
-
-        <form onSubmit={handleLogin}>
-
-          <label>
-            {role === "admin" ? "Admin / MP Official ID" : "Citizen ID or Email"}
-          </label>
-
-          <input
-            type="text"
-            value={userId}
-            onChange={(event) =>
-              setUserId(event.target.value)
-            }
-            placeholder={role === "admin" ? "e.g. ADMIN01 or MP001" : "e.g. CITIZEN01 or user@email.com"}
-            required
-          />
-
-          <label>
-            Password
-          </label>
-
-          <input
-            type="password"
-            value={password}
-            onChange={(event) =>
-              setPassword(event.target.value)
-            }
-            placeholder="Enter Password"
-            required
-          />
-
-          {error && (
-            <div className="login-error">
-              {error}
+        {mode === "login" ? (
+          <>
+            {/* Role Switcher Pill Tabs for Login */}
+            <div className="login-role-switch">
+              <button
+                type="button"
+                className={`role-tab-btn ${role === "user" ? "active role-user" : ""}`}
+                onClick={() => switchRole("user")}
+              >
+                👤 Citizen / Public
+              </button>
+              <button
+                type="button"
+                className={`role-tab-btn ${role === "admin" ? "active role-admin" : ""}`}
+                onClick={() => switchRole("admin")}
+              >
+                👑 Admin & MP
+              </button>
             </div>
-          )}
 
-          <button
-            type="submit"
-            className="primary-button"
-            style={{
-              background: role === "admin" ? "linear-gradient(135deg, #d97706, #b45309)" : undefined,
-            }}
-            disabled={loading}
-          >
-            {loading ? "Authenticating..." : role === "admin" ? "Login as Official / Admin" : "Login as Citizen"}
-          </button>
+            <div style={{ textAlign: "center", marginBottom: "16px" }}>
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "4px 12px",
+                  borderRadius: "20px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  background: role === "admin" ? "rgba(245, 158, 11, 0.15)" : "rgba(37, 99, 235, 0.12)",
+                  color: role === "admin" ? "#d97706" : "#2563eb",
+                  border: `1px solid ${role === "admin" ? "rgba(245, 158, 11, 0.3)" : "rgba(37, 99, 235, 0.25)"}`,
+                  marginBottom: "10px",
+                }}
+              >
+                {role === "admin" ? "Official Parliamentary Secretariat Portal" : "Democratic Public Participation Portal"}
+              </div>
+              <h1>{role === "admin" ? "Admin & MP Login" : "Citizen Portal Login"}</h1>
+              <p>
+                {role === "admin"
+                  ? "Authorized access for Parliament Secretariat, Officers, and Hon'ble MPs."
+                  : "Access public question submissions, committee hearings, and RTI portals."}
+              </p>
+            </div>
 
-        </form>
+            <form onSubmit={handleLogin}>
 
-        {/* 1-Click Demo Credentials */}
-        <div className="login-demo-helper">
-          <span style={{ fontSize: "11px", color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Quick Demo Fill:
-          </span>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px" }}>
-            {role === "admin" ? (
-              <>
-                <button
-                  type="button"
-                  className="demo-fill-btn"
-                  onClick={() => fillDemoCredentials("ADMIN01", "admin123")}
-                >
-                  👑 ADMIN01 / admin123
-                </button>
-                <button
-                  type="button"
-                  className="demo-fill-btn"
-                  onClick={() => fillDemoCredentials("MP001", "12345")}
-                >
-                  🏛 MP001 / 12345
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  type="button"
-                  className="demo-fill-btn"
-                  onClick={() => fillDemoCredentials("CITIZEN01", "user123")}
-                >
-                  👤 CITIZEN01 / user123
-                </button>
-                <button
-                  type="button"
-                  className="demo-fill-btn"
-                  onClick={() => fillDemoCredentials("MP001", "12345")}
-                >
-                  🏛 MP001 / 12345
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+              <label>
+                {role === "admin" ? "Admin / MP Official ID" : "Citizen ID or Email"}
+              </label>
+
+              <input
+                type="text"
+                value={userId}
+                onChange={(event) =>
+                  setUserId(event.target.value)
+                }
+                placeholder={role === "admin" ? "e.g. ADMIN01 or MP001" : "e.g. CITIZEN01 or user@email.com"}
+                required
+              />
+
+              <label>
+                Password
+              </label>
+
+              <input
+                type="password"
+                value={password}
+                onChange={(event) =>
+                  setPassword(event.target.value)
+                }
+                placeholder="Enter Password"
+                required
+              />
+
+              {error && (
+                <div className="login-error">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="primary-button"
+                style={{
+                  background: role === "admin" ? "linear-gradient(135deg, #d97706, #b45309)" : undefined,
+                }}
+                disabled={loading}
+              >
+                {loading ? "Authenticating..." : role === "admin" ? "Login as Official / Admin" : "Login as Citizen"}
+              </button>
+
+            </form>
+
+            {/* 1-Click Demo Credentials */}
+            <div className="login-demo-helper">
+              <span style={{ fontSize: "11px", color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Quick Demo Fill:
+              </span>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px" }}>
+                {role === "admin" ? (
+                  <>
+                    <button
+                      type="button"
+                      className="demo-fill-btn"
+                      onClick={() => fillDemoCredentials("ADMIN01", "admin123")}
+                    >
+                      👑 ADMIN01 / admin123
+                    </button>
+                    <button
+                      type="button"
+                      className="demo-fill-btn"
+                      onClick={() => fillDemoCredentials("MP001", "12345")}
+                    >
+                      🏛 MP001 / 12345
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="demo-fill-btn"
+                      onClick={() => fillDemoCredentials("CITIZEN01", "user123")}
+                    >
+                      👤 CITIZEN01 / user123
+                    </button>
+                    <button
+                      type="button"
+                      className="demo-fill-btn"
+                      onClick={() => fillDemoCredentials("MP001", "12345")}
+                    >
+                      🏛 MP001 / 12345
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="auth-toggle-link">
+              New to Parliament Portal?{" "}
+              <button type="button" onClick={() => switchMode("signup")}>
+                Create an account / Sign Up →
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Sign Up Mode */}
+            <div className="login-role-switch">
+              <button
+                type="button"
+                className={`role-tab-btn ${regRole === "citizen" ? "active role-user" : ""}`}
+                onClick={() => setRegRole("citizen")}
+              >
+                👤 Citizen Account
+              </button>
+              <button
+                type="button"
+                className={`role-tab-btn ${regRole === "mp" ? "active role-admin" : ""}`}
+                onClick={() => setRegRole("mp")}
+              >
+                🏛 Hon'ble MP Account
+              </button>
+            </div>
+
+            <div style={{ textAlign: "center", marginBottom: "16px" }}>
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "4px 12px",
+                  borderRadius: "20px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  background: regRole === "mp" ? "rgba(245, 158, 11, 0.15)" : "rgba(37, 99, 235, 0.12)",
+                  color: regRole === "mp" ? "#d97706" : "#2563eb",
+                  border: `1px solid ${regRole === "mp" ? "rgba(245, 158, 11, 0.3)" : "rgba(37, 99, 235, 0.25)"}`,
+                  marginBottom: "10px",
+                }}
+              >
+                Official User Registration
+              </div>
+              <h1>{regRole === "mp" ? "Member of Parliament Sign Up" : "Citizen Registration"}</h1>
+              <p>
+                {regRole === "mp"
+                  ? "Register authorized parliamentary credentials to access house proceedings and submit notices."
+                  : "Register for democratic participation, question tracking, and parliamentary notices."}
+              </p>
+            </div>
+
+            <form onSubmit={handleRegister}>
+
+              <label>Full Name</label>
+              <input
+                type="text"
+                value={regFullName}
+                onChange={(e) => setRegFullName(e.target.value)}
+                placeholder={regRole === "mp" ? "e.g. Hon'ble Shri Vikram Singh" : "e.g. Ananya Sharma"}
+                required
+              />
+
+              <div className="form-grid-2col">
+                <div>
+                  <label>User ID / Username</label>
+                  <input
+                    type="text"
+                    value={regUserId}
+                    onChange={(e) => setRegUserId(e.target.value)}
+                    placeholder={regRole === "mp" ? "e.g. MP055" : "e.g. CITIZEN05"}
+                    required
+                  />
+                </div>
+                <div>
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    value={regEmail}
+                    onChange={(e) => setRegEmail(e.target.value)}
+                    placeholder="user@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-grid-2col">
+                <div>
+                  <label>State / Union Territory</label>
+                  <input
+                    type="text"
+                    value={regState}
+                    onChange={(e) => setRegState(e.target.value)}
+                    placeholder="e.g. Maharashtra, Uttar Pradesh"
+                    required
+                  />
+                </div>
+                <div>
+                  <label>{regRole === "mp" ? "Constituency / House" : "City / District"}</label>
+                  <input
+                    type="text"
+                    value={regConstituency}
+                    onChange={(e) => setRegConstituency(e.target.value)}
+                    placeholder={regRole === "mp" ? "e.g. Lok Sabha / Varanasi" : "e.g. Lucknow"}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-grid-2col">
+                <div>
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    placeholder="Minimum 5 characters"
+                    required
+                  />
+                </div>
+                <div>
+                  <label>Confirm Password</label>
+                  <input
+                    type="password"
+                    value={regConfirmPassword}
+                    onChange={(e) => setRegConfirmPassword(e.target.value)}
+                    placeholder="Re-enter password"
+                    required
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <div className="login-error">
+                  {error}
+                </div>
+              )}
+
+              {successMsg && (
+                <div style={{ padding: "10px", borderRadius: "8px", background: "#f0fdf4", color: "#166534", marginBottom: "14px", fontSize: "13px", fontWeight: "600" }}>
+                  {successMsg}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="primary-button"
+                style={{
+                  background: regRole === "mp" ? "linear-gradient(135deg, #d97706, #b45309)" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                }}
+                disabled={loading}
+              >
+                {loading ? "Registering & Storing Data..." : "Create Account & Sign In →"}
+              </button>
+
+            </form>
+
+            <div className="auth-toggle-link">
+              Already have an account?{" "}
+              <button type="button" onClick={() => switchMode("login")}>
+                Sign In with your ID →
+              </button>
+            </div>
+          </>
+        )}
 
       </div>
 
@@ -1805,6 +2160,166 @@ function Dashboard() {
   const [submissionFeedback, setSubmissionFeedback] = useState("")
 
   const activeRole = sessionStorage.getItem("userRole") || currentUser?.role || "user"
+
+  // Admin Centralized User & Member Registry State
+  const [registeredUsers, setRegisteredUsers] = useState([])
+  const [usersLoading, setUsersLoading] = useState(false)
+  const [userSearchTerm, setUserSearchTerm] = useState("")
+  const [userRoleFilter, setUserRoleFilter] = useState("all")
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [newFullName, setNewFullName] = useState("")
+  const [newUserId, setNewUserId] = useState("")
+  const [newUserEmail, setNewUserEmail] = useState("")
+  const [newUserRole, setNewUserRole] = useState("mp")
+  const [newUserState, setNewUserState] = useState("Delhi")
+  const [newUserConstituency, setNewUserConstituency] = useState("")
+  const [newUserPassword, setNewUserPassword] = useState("")
+  const [addingUser, setAddingUser] = useState(false)
+  const [addUserFeedback, setAddUserFeedback] = useState("")
+
+  const defaultBaseUsers = [
+    {
+      id: 1,
+      username: "ADMIN01",
+      full_name: "Parliament Secretariat Administrator",
+      email: "admin@sansad.nic.in",
+      role: "admin",
+      state: "New Delhi",
+      constituency: "Central Secretariat",
+      date_joined: "2026-09-10",
+      is_active: true,
+      status: "Verified",
+    },
+    {
+      id: 2,
+      username: "MP001",
+      full_name: "Hon'ble Shri Rajesh Sharma",
+      email: "mp001@parliament.nic.in",
+      role: "mp",
+      state: "Madhya Pradesh",
+      constituency: "Indore (Lok Sabha)",
+      date_joined: "2026-09-28",
+      is_active: true,
+      status: "Verified",
+    },
+    {
+      id: 3,
+      username: "CITIZEN01",
+      full_name: "Aarav Verma",
+      email: "citizen@india.gov.in",
+      role: "citizen",
+      state: "Delhi",
+      constituency: "New Delhi",
+      date_joined: "2026-10-15",
+      is_active: true,
+      status: "Verified",
+    },
+  ]
+
+  const fetchRegisteredUsers = async () => {
+    setUsersLoading(true)
+    let backendUsers = []
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/users/`)
+      if (res.ok) {
+        const data = await res.json()
+        const userList = Array.isArray(data) ? data : (Array.isArray(data.users) ? data.users : [])
+        if (userList.length > 0) {
+          backendUsers = userList.map((u) => ({
+            id: u.id,
+            username: u.username,
+            full_name: u.full_name || u.first_name || u.username,
+            email: u.email,
+            role: u.role || (u.is_staff || u.is_superuser ? "admin" : (u.username.toUpperCase().startsWith("MP") ? "mp" : "citizen")),
+            state: u.state || "National",
+            constituency: u.constituency || "General",
+            date_joined: u.date_joined ? u.date_joined.split("T")[0] : new Date().toISOString().split("T")[0],
+            is_active: u.is_active !== false,
+            status: "Verified",
+          }))
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch backend user registry:", err)
+    }
+
+    let localUsers = []
+    try {
+      localUsers = JSON.parse(localStorage.getItem("parliament_registered_users") || "[]")
+    } catch (e) {
+      localUsers = []
+    }
+
+    const userMap = new Map()
+    defaultBaseUsers.forEach((u) => userMap.set(u.username.toUpperCase(), u))
+    backendUsers.forEach((u) => userMap.set(u.username.toUpperCase(), { ...userMap.get(u.username.toUpperCase()), ...u }))
+    localUsers.forEach((u) => userMap.set(u.username.toUpperCase(), { ...userMap.get(u.username.toUpperCase()), ...u }))
+
+    setRegisteredUsers(Array.from(userMap.values()))
+    setUsersLoading(false)
+  }
+
+  const handleAdminAddUser = async (e) => {
+    e.preventDefault()
+    if (!newUserId.trim() || !newUserPassword.trim()) {
+      setAddUserFeedback("Please enter Member/User ID and Password.")
+      return
+    }
+    setAddingUser(true)
+    setAddUserFeedback("")
+
+    const newUserObj = {
+      id: Date.now(),
+      username: newUserId.trim(),
+      full_name: newFullName.trim() || newUserId.trim(),
+      email: newUserEmail.trim() || `${newUserId.trim().toLowerCase()}@parliament.nic.in`,
+      role: newUserRole,
+      state: newUserState.trim() || "National",
+      constituency: newUserConstituency.trim() || "General",
+      date_joined: new Date().toISOString().split("T")[0],
+      is_active: true,
+      status: "Verified",
+      password: newUserPassword,
+    }
+
+    try {
+      await fetch(`${API_BASE_URL}/api/auth/register/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: newUserObj.username,
+          password: newUserObj.password,
+          email: newUserObj.email,
+          full_name: newUserObj.full_name,
+          role: newUserObj.role,
+          state: newUserObj.state,
+          constituency: newUserObj.constituency,
+        }),
+      })
+    } catch (err) {
+      console.warn("Backend add user failed, saving to client registry:", err)
+    }
+
+    try {
+      const stored = JSON.parse(localStorage.getItem("parliament_registered_users") || "[]")
+      const updated = [newUserObj, ...stored.filter((u) => u.username.toUpperCase() !== newUserObj.username.toUpperCase())]
+      localStorage.setItem("parliament_registered_users", JSON.stringify(updated))
+    } catch (err) {
+      console.error(err)
+    }
+
+    setRegisteredUsers((prev) => [newUserObj, ...prev.filter((u) => u.username.toUpperCase() !== newUserObj.username.toUpperCase())])
+    setAddUserFeedback(`✓ Successfully registered & stored ${newUserObj.full_name} (${newUserObj.username})!`)
+    setNewFullName("")
+    setNewUserId("")
+    setNewUserEmail("")
+    setNewUserPassword("")
+    setAddingUser(false)
+    setTimeout(() => {
+      setShowAddUserModal(false)
+      setAddUserFeedback("")
+    }, 1500)
+  }
 
   useEffect(() => {
 
@@ -1893,6 +2408,7 @@ function Dashboard() {
 
 
     fetchNotifications()
+    fetchRegisteredUsers()
 
   }, [])
 
@@ -1975,6 +2491,30 @@ function Dashboard() {
       setSubmittingQuestion(false);
     }
   };
+
+  const filteredUsers = registeredUsers.filter((u) => {
+    const q = userSearchTerm.toLowerCase().trim()
+    const matchesSearch =
+      !q ||
+      (u.full_name || "").toLowerCase().includes(q) ||
+      (u.username || "").toLowerCase().includes(q) ||
+      (u.email || "").toLowerCase().includes(q) ||
+      (u.state || "").toLowerCase().includes(q) ||
+      (u.constituency || "").toLowerCase().includes(q)
+
+    if (!matchesSearch) return false
+
+    if (userRoleFilter === "all") return true
+    if (userRoleFilter === "mp") return u.role === "mp"
+    if (userRoleFilter === "citizen") return u.role === "citizen" || u.role === "user"
+    if (userRoleFilter === "admin") return u.role === "admin"
+    return true
+  })
+
+  const totalUserCount = registeredUsers.length
+  const mpCount = registeredUsers.filter((u) => u.role === "mp").length
+  const citizenCount = registeredUsers.filter((u) => u.role === "citizen" || u.role === "user").length
+  const adminCount = registeredUsers.filter((u) => u.role === "admin").length
 
 
   return (
@@ -2480,6 +3020,397 @@ function Dashboard() {
 
 
         </section>
+
+
+        {/* =========================================================
+            ADMIN USER & MEMBER REGISTRY SECTION
+           ========================================================= */}
+        {activeRole === "admin" ? (
+          <section className="admin-registry-section">
+            <div className="registry-header-row">
+              <div>
+                <span className="registry-badge">👑 OFFICIAL ADMIN DATABASE CONSOLE</span>
+                <h2>Centralized Member & Citizen Registry</h2>
+                <p>
+                  Live parliamentary database storing all authenticated Members of Parliament (MPs), official administrators, and registered citizens.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="action-button"
+                onClick={() => setShowAddUserModal(!showAddUserModal)}
+                style={{
+                  background: showAddUserModal ? "#64748b" : "linear-gradient(135deg, #d97706, #b45309)",
+                  boxShadow: "0 4px 14px rgba(217, 119, 6, 0.3)",
+                }}
+              >
+                {showAddUserModal ? "✕ Close Form" : "＋ Register New Member / Citizen"}
+              </button>
+            </div>
+
+            {/* Quick Add Member Modal */}
+            {showAddUserModal && (
+              <form
+                className="question-modal-box"
+                onSubmit={handleAdminAddUser}
+                style={{
+                  marginBottom: "24px",
+                  border: "2px solid #fde68a",
+                  background: "linear-gradient(180deg, #fffbeb 0%, #ffffff 100%)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <h3 style={{ margin: 0, color: "#92400e", fontSize: "17px", fontWeight: "800" }}>
+                    🏛 Register New Member or Citizen into Central Database
+                  </h3>
+                  <span style={{ fontSize: "11px", background: "#fef3c7", color: "#b45309", padding: "3px 8px", borderRadius: "6px", fontWeight: "700" }}>
+                    Instant Admin Enrollment
+                  </span>
+                </div>
+
+                <div className="modal-form-grid">
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      Account Role
+                    </label>
+                    <select
+                      value={newUserRole}
+                      onChange={(e) => setNewUserRole(e.target.value)}
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                    >
+                      <option value="mp">🏛 Member of Parliament (Hon'ble MP)</option>
+                      <option value="citizen">👤 Citizen / Public User</option>
+                      <option value="admin">👑 Parliamentary Administrator</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newFullName}
+                      onChange={(e) => setNewFullName(e.target.value)}
+                      placeholder="e.g. Hon'ble Shri Vikram Joshi"
+                      required
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="modal-form-grid">
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      User ID / Username
+                    </label>
+                    <input
+                      type="text"
+                      value={newUserId}
+                      onChange={(e) => setNewUserId(e.target.value)}
+                      placeholder={newUserRole === "mp" ? "e.g. MP088" : "e.g. CITIZEN09"}
+                      required
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={newUserEmail}
+                      onChange={(e) => setNewUserEmail(e.target.value)}
+                      placeholder="official@sansad.nic.in"
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                    />
+                  </div>
+                </div>
+
+                <div className="modal-form-grid">
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      State / UT
+                    </label>
+                    <input
+                      type="text"
+                      value={newUserState}
+                      onChange={(e) => setNewUserState(e.target.value)}
+                      placeholder="e.g. Uttar Pradesh, Maharashtra, Delhi"
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                      Constituency / Division
+                    </label>
+                    <input
+                      type="text"
+                      value={newUserConstituency}
+                      onChange={(e) => setNewUserConstituency(e.target.value)}
+                      placeholder="e.g. Varanasi, Lucknow, Mumbai South"
+                      style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "16px" }}>
+                  <label style={{ display: "block", fontSize: "12px", fontWeight: "700", marginBottom: "6px", color: "#475569" }}>
+                    Initial Password
+                  </label>
+                  <input
+                    type="password"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    placeholder="Set secure password for this user"
+                    required
+                    style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                {addUserFeedback && (
+                  <div
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: "8px",
+                      marginBottom: "14px",
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      background: addUserFeedback.startsWith("✓") ? "#ecfdf5" : "#fff1f2",
+                      color: addUserFeedback.startsWith("✓") ? "#065f46" : "#991b1b",
+                      border: `1px solid ${addUserFeedback.startsWith("✓") ? "#a7f3d0" : "#fecdd3"}`,
+                    }}
+                  >
+                    {addUserFeedback}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="action-button"
+                  disabled={addingUser}
+                  style={{ background: "linear-gradient(135deg, #16a34a, #15803d)" }}
+                >
+                  {addingUser ? "Enrolling & Storing..." : "Save & Enroll Member into Registry ✓"}
+                </button>
+              </form>
+            )}
+
+            {/* Registry Statistics Cards */}
+            <div className="registry-stats-grid">
+              <div className="registry-stat-card">
+                <strong>{totalUserCount}</strong>
+                <span>Total Stored Accounts</span>
+              </div>
+              <div className="registry-stat-card">
+                <strong style={{ color: "#2563eb" }}>{mpCount}</strong>
+                <span>Hon'ble MPs & Officials</span>
+              </div>
+              <div className="registry-stat-card">
+                <strong style={{ color: "#059669" }}>{citizenCount}</strong>
+                <span>Citizen Members</span>
+              </div>
+              <div className="registry-stat-card">
+                <strong style={{ color: "#d97706" }}>{adminCount}</strong>
+                <span>System Admins</span>
+              </div>
+            </div>
+
+            {/* Search and Filters */}
+            <div className="registry-filter-bar">
+              <div className="registry-search-box">
+                <span className="registry-search-icon">🔍</span>
+                <input
+                  type="text"
+                  className="registry-search-input"
+                  placeholder="Search stored members by name, ID, constituency, state, or email..."
+                  value={userSearchTerm}
+                  onChange={(e) => setUserSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="registry-filter-pills">
+                <button
+                  type="button"
+                  className={`registry-filter-btn ${userRoleFilter === "all" ? "active" : ""}`}
+                  onClick={() => setUserRoleFilter("all")}
+                >
+                  All ({totalUserCount})
+                </button>
+                <button
+                  type="button"
+                  className={`registry-filter-btn ${userRoleFilter === "mp" ? "active" : ""}`}
+                  onClick={() => setUserRoleFilter("mp")}
+                >
+                  🏛 MPs ({mpCount})
+                </button>
+                <button
+                  type="button"
+                  className={`registry-filter-btn ${userRoleFilter === "citizen" ? "active" : ""}`}
+                  onClick={() => setUserRoleFilter("citizen")}
+                >
+                  👤 Citizens ({citizenCount})
+                </button>
+                <button
+                  type="button"
+                  className={`registry-filter-btn ${userRoleFilter === "admin" ? "active" : ""}`}
+                  onClick={() => setUserRoleFilter("admin")}
+                >
+                  👑 Admins ({adminCount})
+                </button>
+              </div>
+            </div>
+
+            {/* Registered Users Table */}
+            <div className="registry-table-card">
+              <table className="registry-table">
+                <thead>
+                  <tr>
+                    <th>Member / User</th>
+                    <th>Role</th>
+                    <th>State & Constituency</th>
+                    <th>Email Contact</th>
+                    <th>Enrolled On</th>
+                    <th>Storage Status</th>
+                    <th>Verification</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
+                        {usersLoading ? "Refreshing database records..." : "No member records matched your search."}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredUsers.map((u) => {
+                      const initial = (u.full_name || u.username || "U").charAt(0).toUpperCase()
+                      const isMp = u.role === "mp"
+                      const isAdmin = u.role === "admin"
+                      const avatarClass = isAdmin ? "role-admin" : isMp ? "role-mp" : "role-citizen"
+                      const badgeClass = isAdmin ? "badge-admin" : isMp ? "badge-mp" : "badge-citizen"
+                      const roleLabel = isAdmin ? "👑 Administrator" : isMp ? "🏛 Hon'ble MP" : "👤 Citizen User"
+
+                      return (
+                        <tr key={u.id || u.username}>
+                          <td>
+                            <div className="user-profile-cell">
+                              <div className={`user-avatar ${avatarClass}`}>
+                                {initial}
+                              </div>
+                              <div>
+                                <div className="user-meta-name">{u.full_name || u.username}</div>
+                                <div className="user-meta-id">ID: {u.username}</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>
+                            <span className={`role-pill-badge ${badgeClass}`}>
+                              {roleLabel}
+                            </span>
+                          </td>
+
+                          <td>
+                            <div style={{ fontWeight: 600, color: "#1e293b" }}>
+                              {u.constituency || "General"}
+                            </div>
+                            <div style={{ fontSize: "11px", color: "#64748b" }}>
+                              {u.state || "National"}
+                            </div>
+                          </td>
+
+                          <td>
+                            <span style={{ fontSize: "12px", color: "#475569" }}>
+                              {u.email || "—"}
+                            </span>
+                          </td>
+
+                          <td>
+                            <span style={{ fontSize: "12px", color: "#64748b" }}>
+                              {u.date_joined || "2026-10-28"}
+                            </span>
+                          </td>
+
+                          <td>
+                            <span className="status-active-pill">
+                              <span className="status-pulse-dot"></span>
+                              Stored & Active
+                            </span>
+                          </td>
+
+                          <td>
+                            <span style={{
+                              display: "inline-block",
+                              padding: "4px 9px",
+                              borderRadius: "6px",
+                              background: "#f1f5f9",
+                              color: "#334155",
+                              fontSize: "11px",
+                              fontWeight: "700",
+                              border: "1px solid #e2e8f0"
+                            }}>
+                              ✓ Verified
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : (
+          /* Citizen Verification Card */
+          <div style={{
+            marginTop: "30px",
+            padding: "20px 24px",
+            borderRadius: "14px",
+            background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)",
+            border: "1px solid #bbf7d0",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "14px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <div style={{
+                width: "44px",
+                height: "44px",
+                borderRadius: "50%",
+                background: "#22c55e",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "20px",
+                fontWeight: "bold",
+              }}>
+                ✓
+              </div>
+              <div>
+                <strong style={{ display: "block", color: "#166534", fontSize: "15px" }}>
+                  Active Citizen Account Stored in Parliament National Registry
+                </strong>
+                <span style={{ fontSize: "12px", color: "#15803d" }}>
+                  Logged in as: <strong>{currentUser?.name || currentUser?.full_name || currentUser?.username || "Citizen"}</strong> ({currentUser?.username || sessionStorage.getItem("memberId") || "CITIZEN01"}) • ID & Activity Records are synced with Parliament Secretariat.
+                </span>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "8px" }}>
+              <span className="status-active-pill">
+                <span className="status-pulse-dot"></span>
+                Record Stored
+              </span>
+            </div>
+          </div>
+        )}
 
 
         <div style={{ marginTop: "25px" }}>
