@@ -42,3 +42,6 @@ database/
 backend/sqlite_backup.json
 
 backend/local_data_backup.json
+
+# Scratch directory
+scratch/
