@@ -146,42 +146,51 @@ function Header() {
       </div>
 
 
-      <nav className="main-navigation">
+      <nav className="main-navigation" aria-label="Parliamentary Navigation">
 
-        <NavLink to="/" end>
-          Home
+        <NavLink to="/" end className="nav-item">
+          <span className="nav-icon">🏛</span>
+          <span className="nav-text">Home</span>
         </NavLink>
 
-        <NavLink to="/members">
-          Members
+        <NavLink to="/members" className="nav-item">
+          <span className="nav-icon">👥</span>
+          <span className="nav-text">Members</span>
         </NavLink>
 
-        <NavLink to="/bills">
-          Bills & Acts
+        <NavLink to="/bills" className="nav-item">
+          <span className="nav-icon">📜</span>
+          <span className="nav-text">Bills & Acts</span>
         </NavLink>
 
-        <NavLink to="/questions">
-          Questions
+        <NavLink to="/questions" className="nav-item">
+          <span className="nav-icon">💬</span>
+          <span className="nav-text">Questions</span>
         </NavLink>
 
-        <NavLink to="/committees">
-          Committees
+        <NavLink to="/committees" className="nav-item">
+          <span className="nav-icon">🏛️</span>
+          <span className="nav-text">Committees</span>
         </NavLink>
 
-        <NavLink to="/proceedings">
-          Proceedings
+        <NavLink to="/proceedings" className="nav-item">
+          <span className="nav-icon">⚖️</span>
+          <span className="nav-text">Proceedings</span>
         </NavLink>
 
-        <NavLink to="/attendance">
-          Attendance
+        <NavLink to="/attendance" className="nav-item">
+          <span className="nav-icon">📋</span>
+          <span className="nav-text">Attendance</span>
         </NavLink>
 
-        <NavLink to="/documents">
-          Documents
+        <NavLink to="/documents" className="nav-item">
+          <span className="nav-icon">📑</span>
+          <span className="nav-text">Documents</span>
         </NavLink>
 
-        <NavLink to="/notifications" className="nav-notifications">
-          Notifications
+        <NavLink to="/notifications" className="nav-item nav-notifications">
+          <span className="nav-icon">🔔</span>
+          <span className="nav-text">Notifications</span>
           <span className="notification-dot-badge">3</span>
         </NavLink>
 
@@ -779,155 +788,156 @@ function Home() {
         }
 
         .portal-module-card {
-
           position: relative;
-
           display: flex;
-
-          gap: 18px;
-
+          align-items: flex-start;
+          gap: 20px;
           min-height: 225px;
-
-          padding: 26px;
-
+          padding: 26px 24px;
           overflow: hidden;
-
-          border:
-            1px solid #e2e8f1;
-
-          border-radius: 14px;
-
-          background: white;
-
-          box-shadow:
-            0 8px 25px
-            rgba(16,45,80,0.055);
-
+          border: 1px solid rgba(214, 227, 245, 0.9);
+          border-radius: 18px;
+          background: linear-gradient(155deg, #ffffff 0%, #f9fbfe 60%, #f2f7fc 100%);
+          box-shadow: 
+            0 10px 30px -10px rgba(12, 38, 72, 0.08),
+            0 2px 6px rgba(12, 38, 72, 0.03),
+            inset 0 1px 0 rgba(255, 255, 255, 0.95);
           text-decoration: none;
-
-          transition:
-            all 0.22s ease;
+          transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .portal-module-card::after {
-
           content: "";
-
           position: absolute;
-
-          width: 110px;
-          height: 110px;
-
+          width: 130px;
+          height: 130px;
           right: -45px;
           bottom: -45px;
-
           border-radius: 50%;
-
-          background: #edf4ff;
-
-          transition:
-            transform 0.25s ease;
+          background: radial-gradient(circle, rgba(37, 99, 235, 0.09) 0%, rgba(237, 244, 255, 0) 70%);
+          transition: transform 0.35s ease;
+          pointer-events: none;
         }
 
         .portal-module-card:hover {
-
-          transform:
-            translateY(-5px);
-
-          border-color:
-            #c7d9f0;
-
-          box-shadow:
-            0 18px 38px
-            rgba(16,45,80,0.12);
+          transform: translateY(-7px);
+          box-shadow: 
+            0 22px 46px -10px rgba(12, 44, 84, 0.16),
+            0 0 20px rgba(56, 189, 248, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
         .portal-module-card:hover::after {
-
-          transform:
-            scale(1.4);
+          transform: scale(1.6);
         }
+
+        .portal-module-card.card-members:hover { border-color: #93c5fd; }
+        .portal-module-card.card-bills:hover { border-color: #fde68a; }
+        .portal-module-card.card-questions:hover { border-color: #ddd6fe; }
+        .portal-module-card.card-committees:hover { border-color: #a7f3d0; }
+        .portal-module-card.card-proceedings:hover { border-color: #c7d2fe; }
+        .portal-module-card.card-documents:hover { border-color: #a5f3fc; }
+        .portal-module-card.card-attendance:hover { border-color: #99f6e4; }
+        .portal-module-card.card-notifications:hover { border-color: #fecdd3; }
+        .portal-module-card.card-services:hover { border-color: #fde047; }
 
         .portal-module-icon {
-
           position: relative;
-
           z-index: 2;
-
           flex-shrink: 0;
-
-          width: 48px;
-          height: 48px;
-
+          width: 52px;
+          height: 52px;
           display: flex;
-
           align-items: center;
-
           justify-content: center;
-
-          border-radius: 12px;
-
-          background: #edf4ff;
-
-          color: #195797;
-
-          font-size: 21px;
+          border-radius: 14px;
+          font-size: 23px;
+          box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+          transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease;
         }
 
+        .portal-module-card:hover .portal-module-icon {
+          transform: scale(1.12) rotate(-4deg);
+        }
+
+        .card-members .portal-module-icon { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .card-bills .portal-module-icon { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #b45309; border: 1px solid #fde68a; }
+        .card-questions .portal-module-icon { background: linear-gradient(135deg, #faf5ff, #f3e8ff); color: #7e22ce; border: 1px solid #e9d5ff; }
+        .card-committees .portal-module-icon { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #047857; border: 1px solid #a7f3d0; }
+        .card-proceedings .portal-module-icon { background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: #4338ca; border: 1px solid #c7d2fe; }
+        .card-documents .portal-module-icon { background: linear-gradient(135deg, #ecfeff, #cffafe); color: #0e7490; border: 1px solid #a5f3fc; }
+        .card-attendance .portal-module-icon { background: linear-gradient(135deg, #f0fdfa, #ccfbf1); color: #0f766e; border: 1px solid #99f6e4; }
+        .card-notifications .portal-module-icon { background: linear-gradient(135deg, #fff1f2, #ffe4e6); color: #be123c; border: 1px solid #fecdd3; }
+        .card-services .portal-module-icon { background: linear-gradient(135deg, #fefce8, #fef9c3); color: #a16207; border: 1px solid #fde047; }
+
         .portal-module-content {
-
           position: relative;
-
           z-index: 2;
-
           min-width: 0;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        .portal-card-top-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 6px;
         }
 
         .portal-card-number {
-
-          display: block;
-
-          margin-bottom: 8px;
-
-          color: #9baac0;
-
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2px 8px;
+          border-radius: 6px;
+          background: rgba(226, 232, 240, 0.65);
+          border: 1px solid rgba(203, 213, 225, 0.7);
+          color: #475569;
           font-size: 11px;
-
           font-weight: 800;
+          letter-spacing: 0.5px;
+        }
 
-          letter-spacing: 1px;
+        .portal-card-tag {
+          font-size: 9.5px;
+          font-weight: 800;
+          letter-spacing: 1.1px;
+          text-transform: uppercase;
+          color: #64748b;
         }
 
         .portal-module-content h3 {
-
           margin: 0;
-
-          color: #162b49;
-
-          font-size: 21px;
-
+          color: #0f2544;
+          font-size: 20px;
           font-weight: 800;
+          letter-spacing: -0.2px;
         }
 
         .portal-module-content p {
-
-          margin:
-            12px 0 18px;
-
-          color: #68778c;
-
+          margin: 9px 0 16px;
+          color: #556987;
           font-size: 13px;
-
-          line-height: 1.65;
+          line-height: 1.6;
+          flex: 1;
         }
 
         .portal-card-link {
-
-          color: #1d5d9e;
-
-          font-size: 12px;
-
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: #1e40af;
+          font-size: 12.5px;
           font-weight: 800;
+          letter-spacing: 0.2px;
+          transition: all 0.2s ease;
+        }
+
+        .portal-module-card:hover .portal-card-link {
+          gap: 10px;
+          color: #2563eb;
         }
 
         .portal-information {
@@ -1316,351 +1326,122 @@ function Home() {
 
         <div className="portal-module-grid">
 
-
-          <Link
-            to="/members"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              👤
-            </div>
-
-
+          <Link to="/members" className="portal-module-card card-members">
+            <div className="portal-module-icon">👥</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                01
-              </span>
-
-
-              <h3>
-                Members
-              </h3>
-
-
-              <p>
-
-                Explore Member profiles, constituencies,
-                political parties and parliamentary information.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Members →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Representatives</span>
+                <span className="portal-card-number">01</span>
+              </div>
+              <h3>Members of Parliament</h3>
+              <p>Explore Member profiles, parliamentary terms, constituencies, and political party affiliations.</p>
+              <span className="portal-card-link">Explore Members →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/bills"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              📜
-            </div>
-
-
+          <Link to="/bills" className="portal-module-card card-bills">
+            <div className="portal-module-icon">📜</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                02
-              </span>
-
-
-              <h3>
-                Bills & Acts
-              </h3>
-
-
-              <p>
-
-                Explore legislative bills, their status,
-                introduction details and parliamentary information.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Bills →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Legislation</span>
+                <span className="portal-card-number">02</span>
+              </div>
+              <h3>Bills & Acts</h3>
+              <p>Track legislative bills, gazetted acts, status timelines, and legal draft texts across sessions.</p>
+              <span className="portal-card-link">View Bills & Acts →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/questions"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              ?
-            </div>
-
-
+          <Link to="/questions" className="portal-module-card card-questions">
+            <div className="portal-module-icon">💬</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                03
-              </span>
-
-
-              <h3>
-                Questions
-              </h3>
-
-
-              <p>
-
-                Explore questions submitted by Members
-                and their parliamentary responses.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Questions →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Inquiries</span>
+                <span className="portal-card-number">03</span>
+              </div>
+              <h3>Questions & Replies</h3>
+              <p>Search Starred and Unstarred ministerial questions, oral sessions, and verified replies.</p>
+              <span className="portal-card-link">Search Questions →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/committees"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              🏛
-            </div>
-
-
+          <Link to="/committees" className="portal-module-card card-committees">
+            <div className="portal-module-icon">🏛️</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                04
-              </span>
-
-
-              <h3>
-                Committees
-              </h3>
-
-
-              <p>
-
-                Explore parliamentary committees,
-                departments, chairpersons and members.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Committees →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Panels & Scrutiny</span>
+                <span className="portal-card-number">04</span>
+              </div>
+              <h3>Committees</h3>
+              <p>Review Standing, Select, and Joint parliamentary committees, chairpersons, and members.</p>
+              <span className="portal-card-link">View Committees →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/proceedings"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              🗂
-            </div>
-
-
+          <Link to="/proceedings" className="portal-module-card card-proceedings">
+            <div className="portal-module-icon">⚖️</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                05
-              </span>
-
-
-              <h3>
-                Proceedings
-              </h3>
-
-
-              <p>
-
-                Access parliamentary proceedings,
-                sitting information and official records.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Proceedings →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Debates & Sittings</span>
+                <span className="portal-card-number">05</span>
+              </div>
+              <h3>House Proceedings</h3>
+              <p>Access official debate transcripts, daily legislative business, and verbatim session logs.</p>
+              <span className="portal-card-link">View Proceedings →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/documents"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              📄
-            </div>
-
-
+          <Link to="/documents" className="portal-module-card card-documents">
+            <div className="portal-module-icon">📑</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                06
-              </span>
-
-
-              <h3>
-                Digital Access
-              </h3>
-
-
-              <p>
-
-                Parliamentary documents, gazettes,
-                and official records available through digital platform.
-
-              </p>
-
-
-              <span className="portal-card-link">
-                View Documents →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Digital Archive</span>
+                <span className="portal-card-number">06</span>
+              </div>
+              <h3>Documents & Reports</h3>
+              <p>Official parliamentary papers, publications, gazettes, committee reports, and public laws.</p>
+              <span className="portal-card-link">Browse Documents →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/attendance"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              📊
-            </div>
-
-
+          <Link to="/attendance" className="portal-module-card card-attendance">
+            <div className="portal-module-icon">📋</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                07
-              </span>
-
-
-              <h3>
-                Attendance
-              </h3>
-
-
-              <p>
-                Track Member of Parliament house attendance,
-                participation registries, and sitting records.
-              </p>
-
-
-              <span className="portal-card-link">
-                View Attendance →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Participation</span>
+                <span className="portal-card-number">07</span>
+              </div>
+              <h3>Member Attendance</h3>
+              <p>Verified parliamentary attendance logs, session roll calls, and committee participation records.</p>
+              <span className="portal-card-link">Check Attendance →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/notifications"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              🔔
-            </div>
-
-
+          <Link to="/notifications" className="portal-module-card card-notifications">
+            <div className="portal-module-icon">🔔</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                08
-              </span>
-
-
-              <h3>
-                Notifications
-              </h3>
-
-
-              <p>
-                Real-time official parliamentary bulletins,
-                press announcements, circulars and alerts.
-              </p>
-
-
-              <span className="portal-card-link">
-                View Notifications →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Bulletins</span>
+                <span className="portal-card-number">08</span>
+              </div>
+              <h3>Live Notifications</h3>
+              <p>Real-time official secretariat bulletins, gazette alerts, calendar notices, and press releases.</p>
+              <span className="portal-card-link">View Notifications →</span>
             </div>
-
           </Link>
 
-
-          <Link
-            to="/login"
-            className="portal-module-card"
-          >
-
-            <div className="portal-module-icon">
-              🔐
-            </div>
-
-
+          <Link to="/login" className="portal-module-card card-services">
+            <div className="portal-module-icon">🔐</div>
             <div className="portal-module-content">
-
-              <span className="portal-card-number">
-                09
-              </span>
-
-
-              <h3>
-                Portal Services
-              </h3>
-
-
-              <p>
-                Dual access portal for Citizens to submit queries
-                and Officials/MPs to manage administration.
-              </p>
-
-
-              <span className="portal-card-link">
-                Access Portal →
-              </span>
-
+              <div className="portal-card-top-row">
+                <span className="portal-card-tag">Access Gateway</span>
+                <span className="portal-card-number">09</span>
+              </div>
+              <h3>Portal Services & Login</h3>
+              <p>Dedicated access portals: Citizens submit public questions, MPs and Officials manage portal operations.</p>
+              <span className="portal-card-link">Launch Portal Login →</span>
             </div>
-
           </Link>
-
 
         </div>
 
