@@ -37,6 +37,23 @@ function Header() {
   const [searchText, setSearchText] = useState("")
   const [members, setMembers] = useState([])
   const [showResults, setShowResults] = useState(false)
+  const [showRoleMenu, setShowRoleMenu] = useState(false)
+  const navigate = useNavigate()
+
+  const isLoggedIn = sessionStorage.getItem("memberLoggedIn") === "true"
+  const userRole = sessionStorage.getItem("userRole") || "user"
+  const memberId = sessionStorage.getItem("memberId") || (userRole === "admin" ? "ADMIN" : "CITIZEN")
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("memberLoggedIn")
+    sessionStorage.removeItem("accessToken")
+    sessionStorage.removeItem("refreshToken")
+    sessionStorage.removeItem("user")
+    sessionStorage.removeItem("memberId")
+    sessionStorage.removeItem("userRole")
+    setShowRoleMenu(false)
+    navigate("/login")
+  }
 
 
   useEffect(() => {
@@ -163,6 +180,11 @@ function Header() {
           Documents
         </NavLink>
 
+        <NavLink to="/notifications" className="nav-notifications">
+          Notifications
+          <span className="notification-dot-badge">3</span>
+        </NavLink>
+
       </nav>
 
 
@@ -248,12 +270,84 @@ function Header() {
         </div>
 
 
-        <Link
-          to="/login"
-          className="login-button"
-        >
-          👤
-        </Link>
+        <div className="header-role-container">
+
+          <button
+            type="button"
+            className={`header-role-btn ${isLoggedIn ? (userRole === "admin" ? "role-admin" : "role-user") : ""}`}
+            onClick={() => setShowRoleMenu(!showRoleMenu)}
+          >
+            {isLoggedIn ? (
+              userRole === "admin" ? (
+                <>
+                  <span>👑 Admin: {memberId}</span>
+                  <span className="role-caret">▼</span>
+                </>
+              ) : (
+                <>
+                  <span>👤 Citizen: {memberId}</span>
+                  <span className="role-caret">▼</span>
+                </>
+              )
+            ) : (
+              <>
+                <span>🔐 Portal Login</span>
+                <span className="role-caret">▼</span>
+              </>
+            )}
+          </button>
+
+          {showRoleMenu && (
+            <div className="role-dropdown-menu">
+              {isLoggedIn ? (
+                <>
+                  <div className="dropdown-header-label">Active Role: {userRole.toUpperCase()}</div>
+                  <Link
+                    to="/dashboard"
+                    className="dropdown-item-btn"
+                    onClick={() => setShowRoleMenu(false)}
+                  >
+                    <span>📊 Member Dashboard</span>
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="dropdown-item-btn"
+                    onClick={() => setShowRoleMenu(false)}
+                  >
+                    <span>🔄 Switch Portal Role</span>
+                  </Link>
+                  <div className="dropdown-divider"></div>
+                  <button
+                    type="button"
+                    className="dropdown-logout-btn"
+                    onClick={handleLogout}
+                  >
+                    <span>🚪 Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="dropdown-header-label">Select Portal Login</div>
+                  <Link
+                    to="/login?role=user"
+                    className="dropdown-item-btn item-user"
+                    onClick={() => setShowRoleMenu(false)}
+                  >
+                    <span>👤 Citizen / Public Login</span>
+                  </Link>
+                  <Link
+                    to="/login?role=admin"
+                    className="dropdown-item-btn item-admin"
+                    onClick={() => setShowRoleMenu(false)}
+                  >
+                    <span>👑 Admin & Official Login</span>
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
+
+        </div>
 
       </div>
 
@@ -346,168 +440,34 @@ function Home() {
           pointer-events: none;
         }
 
-        @keyframes slowChakraSpin {
-          from {
-            transform: translateY(-50%) rotate(0deg);
+        @keyframes slowChakra3D {
+          0% {
+            transform: translateY(-50%) perspective(1200px) rotateY(-14deg) rotateX(8deg) rotateZ(0deg);
           }
-          to {
-            transform: translateY(-50%) rotate(360deg);
+          100% {
+            transform: translateY(-50%) perspective(1200px) rotateY(-14deg) rotateX(8deg) rotateZ(360deg);
           }
         }
 
         .portal-chakra {
           position: absolute;
-          width: 440px;
-          height: 440px;
+          width: 500px;
+          height: 500px;
           right: 6%;
           top: 48%;
-          transform: translateY(-50%);
+          transform: translateY(-50%) perspective(1200px) rotateY(-14deg) rotateX(8deg);
           border-radius: 50%;
           pointer-events: none;
           z-index: 2;
-          opacity: 0.18;
-          filter: drop-shadow(0 0 45px rgba(147, 197, 253, 0.35));
+          opacity: 0.42;
+          filter:
+            drop-shadow(0 0 55px rgba(56, 189, 248, 0.48))
+            drop-shadow(0 25px 45px rgba(0, 7, 24, 0.75));
           background-repeat: no-repeat;
           background-position: center;
           background-size: contain;
-          animation: slowChakraSpin 200s linear infinite;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cdefs%3E%3CradialGradient id='hubGlow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.9'/%3E%3Cstop offset='70%25' stop-color='%23ffffff' stop-opacity='0.5'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.1'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='%23ffffff'%3E%3Ccircle cx='200' cy='200' r='192' stroke-width='6' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='180' stroke-width='2.5' stroke-dasharray='3.5 19.5' stroke-linecap='round' stroke-opacity='0.8'/%3E%3Ccircle cx='200' cy='200' r='165' stroke-width='3.5' stroke-opacity='0.85'/%3E%3Ccircle cx='200' cy='200' r='38' fill='url(%23hubGlow)' stroke-width='4' stroke-opacity='0.9'/%3E%3Ccircle cx='200' cy='200' r='15' fill='%23ffffff' stroke='none'/%3E%3C/g%3E%3Cg stroke='%23ffffff' stroke-width='2.2' stroke-opacity='0.85' stroke-linecap='round'%3E%3Cline x1='200' y1='200' x2='200' y2='35'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='40.6'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='365' y2='200'/%3E%3Cline x1='200' y1='200' x2='359.4' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='342.9' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='316.7' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='282.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='242.7' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='200' y2='365'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='359.4'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='342.9'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='316.7'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='282.5'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='242.7'/%3E%3Cline x1='200' y1='200' x2='35' y2='200'/%3E%3Cline x1='200' y1='200' x2='40.6' y2='157.3'/%3E%3Cline x1='200' y1='200' x2='57.1' y2='117.5'/%3E%3Cline x1='200' y1='200' x2='83.3' y2='83.3'/%3E%3Cline x1='200' y1='200' x2='117.5' y2='57.1'/%3E%3Cline x1='200' y1='200' x2='157.3' y2='40.6'/%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        @keyframes float3DParliament {
-          0%, 100% {
-            transform: translateY(0px) rotateY(-11deg) rotateX(5deg) translateZ(12px);
-          }
-          50% {
-            transform: translateY(-12px) rotateY(-7deg) rotateX(2deg) translateZ(26px);
-          }
-        }
-
-        @keyframes shadowPulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.55;
-          }
-          50% {
-            transform: scale(0.88);
-            opacity: 0.30;
-          }
-        }
-
-        @keyframes sheenPass {
-          0% {
-            transform: translateX(-150%) skewX(-25deg);
-          }
-          28%, 100% {
-            transform: translateX(250%) skewX(-25deg);
-          }
-        }
-
-        .portal-3d-showcase {
-          position: absolute;
-          right: 5%;
-          top: 48%;
-          transform: translateY(-50%);
-          width: 500px;
-          max-width: 42vw;
-          z-index: 4;
-          perspective: 1400px;
-          pointer-events: auto;
-          cursor: pointer;
-        }
-
-        .portal-3d-card {
-          position: relative;
-          width: 100%;
-          border-radius: 20px;
-          padding: 10px;
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.18) 0%,
-            rgba(255, 255, 255, 0.04) 100%
-          );
-          border: 1px solid rgba(255, 255, 255, 0.28);
-          box-shadow:
-            0 25px 60px rgba(2, 10, 28, 0.75),
-            0 0 50px rgba(56, 189, 248, 0.24),
-            inset 0 1px 1px rgba(255, 255, 255, 0.5);
-          backdrop-filter: blur(14px);
-          transform-style: preserve-3d;
-          animation: float3DParliament 6s ease-in-out infinite;
-          transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
-          overflow: hidden;
-        }
-
-        .portal-3d-card:hover {
-          transform: translateY(-8px) rotateY(-4deg) rotateX(2deg) scale(1.02);
-          box-shadow:
-            0 35px 80px rgba(2, 10, 28, 0.9),
-            0 0 70px rgba(56, 189, 248, 0.45),
-            inset 0 1px 2px rgba(255, 255, 255, 0.7);
-        }
-
-        .portal-3d-monument-img {
-          display: block;
-          width: 100%;
-          height: auto;
-          border-radius: 14px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-          filter: contrast(1.06) brightness(1.02);
-        }
-
-        .portal-3d-sheen {
-          position: absolute;
-          inset: 0;
-          width: 60%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.22),
-            transparent
-          );
-          animation: sheenPass 7s ease-in-out infinite;
-          pointer-events: none;
-        }
-
-        .portal-3d-badge {
-          position: absolute;
-          bottom: 20px;
-          left: 22px;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 6px 14px;
-          border-radius: 30px;
-          background: rgba(4, 18, 42, 0.88);
-          border: 1px solid rgba(255, 255, 255, 0.24);
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
-          backdrop-filter: blur(8px);
-          color: #f1f5f9;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.5px;
-        }
-
-        .portal-3d-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 10px #10b981;
-        }
-
-        .portal-3d-shadow {
-          width: 82%;
-          height: 22px;
-          margin: 12px auto 0;
-          border-radius: 50%;
-          background: radial-gradient(
-            ellipse at center,
-            rgba(0, 0, 0, 0.65) 0%,
-            transparent 70%
-          );
-          filter: blur(10px);
-          animation: shadowPulse 6s ease-in-out infinite;
+          animation: slowChakra3D 180s linear infinite;
+          background-image: url("/images/chakra-3d.svg");
         }
 
         .portal-hero-content {
@@ -1078,18 +1038,6 @@ function Home() {
             opacity: 0.15;
           }
 
-          .portal-3d-showcase {
-            width: 400px;
-            right: 2%;
-            opacity: 0.95;
-          }
-
-        }
-
-        @media (max-width: 860px) {
-          .portal-3d-showcase {
-            display: none;
-          }
         }
 
         @media (max-width: 750px) {
@@ -1212,22 +1160,6 @@ function Home() {
         <div className="portal-hero-overlay"></div>
 
         <div className="portal-chakra"></div>
-
-        <div className="portal-3d-showcase">
-          <div className="portal-3d-card" title="Samvidhan Sadan • Parliament of India">
-            <img 
-              src="/images/parliament-monument-3d.png" 
-              alt="Indian Parliament House - Samvidhan Sadan" 
-              className="portal-3d-monument-img"
-            />
-            <div className="portal-3d-sheen"></div>
-            <div className="portal-3d-badge">
-              <span className="portal-3d-dot"></span>
-              <span>Samvidhan Sadan • Parliament of India</span>
-            </div>
-          </div>
-          <div className="portal-3d-shadow"></div>
-        </div>
 
         <div className="portal-hero-content">
 
@@ -1619,6 +1551,117 @@ function Home() {
           </Link>
 
 
+          <Link
+            to="/attendance"
+            className="portal-module-card"
+          >
+
+            <div className="portal-module-icon">
+              📊
+            </div>
+
+
+            <div className="portal-module-content">
+
+              <span className="portal-card-number">
+                07
+              </span>
+
+
+              <h3>
+                Attendance
+              </h3>
+
+
+              <p>
+                Track Member of Parliament house attendance,
+                participation registries, and sitting records.
+              </p>
+
+
+              <span className="portal-card-link">
+                View Attendance →
+              </span>
+
+            </div>
+
+          </Link>
+
+
+          <Link
+            to="/notifications"
+            className="portal-module-card"
+          >
+
+            <div className="portal-module-icon">
+              🔔
+            </div>
+
+
+            <div className="portal-module-content">
+
+              <span className="portal-card-number">
+                08
+              </span>
+
+
+              <h3>
+                Notifications
+              </h3>
+
+
+              <p>
+                Real-time official parliamentary bulletins,
+                press announcements, circulars and alerts.
+              </p>
+
+
+              <span className="portal-card-link">
+                View Notifications →
+              </span>
+
+            </div>
+
+          </Link>
+
+
+          <Link
+            to="/login"
+            className="portal-module-card"
+          >
+
+            <div className="portal-module-icon">
+              🔐
+            </div>
+
+
+            <div className="portal-module-content">
+
+              <span className="portal-card-number">
+                09
+              </span>
+
+
+              <h3>
+                Portal Services
+              </h3>
+
+
+              <p>
+                Dual access portal for Citizens to submit queries
+                and Officials/MPs to manage administration.
+              </p>
+
+
+              <span className="portal-card-link">
+                Access Portal →
+              </span>
+
+            </div>
+
+          </Link>
+
+
         </div>
 
       </section>
@@ -1668,12 +1711,36 @@ function Home() {
 function Login() {
 
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialRole = searchParams.get("role") === "admin" ? "admin" : "user"
+  const [role, setRole] = useState(initialRole)
 
   const [userId, setUserId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
+  // Keep state synced with URL search params
+  useEffect(() => {
+    const qRole = searchParams.get("role")
+    if (qRole === "admin" || qRole === "user") {
+      setRole(qRole)
+    }
+  }, [searchParams])
+
+  const switchRole = (newRole) => {
+    setRole(newRole)
+    setSearchParams({ role: newRole })
+    setError("")
+    setUserId("")
+    setPassword("")
+  }
+
+  const fillDemoCredentials = (u, p) => {
+    setUserId(u)
+    setPassword(p)
+    setError("")
+  }
 
   const handleLogin = async (event) => {
 
@@ -1681,6 +1748,9 @@ function Login() {
 
     setError("")
     setLoading(true)
+
+    const cleanUser = userId.trim()
+    const cleanUserUpper = cleanUser.toUpperCase()
 
     // 1. Attempt Real Backend JWT Authentication
     try {
@@ -1690,7 +1760,7 @@ function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: userId.trim(),
+          username: cleanUser,
           password: password,
         }),
       })
@@ -1699,46 +1769,83 @@ function Login() {
 
       if (response.ok && data.success) {
         sessionStorage.setItem("memberLoggedIn", "true")
+        sessionStorage.setItem("userRole", role)
         sessionStorage.setItem("accessToken", data.access)
         sessionStorage.setItem("refreshToken", data.refresh)
-        sessionStorage.setItem("user", JSON.stringify(data.user))
-        sessionStorage.setItem("memberId", data.user?.username || userId)
+        sessionStorage.setItem("user", JSON.stringify({
+          ...data.user,
+          role: role,
+        }))
+        sessionStorage.setItem("memberId", data.user?.username || cleanUser)
 
         setLoading(false)
         navigate("/dashboard", { replace: true })
         return
-      } else if (response.status === 400 || response.status === 401 || response.status === 403) {
-        // If server rejected credentials, allow demo MP001 if provided
-        if (userId.trim().toUpperCase() === "MP001" && password === "12345") {
-          sessionStorage.setItem("memberLoggedIn", "true")
-          sessionStorage.setItem("user", JSON.stringify({ username: "MP001", email: "mp001@parliament.nic.in" }))
-          sessionStorage.setItem("memberId", "MP001")
-
-          setLoading(false)
-          navigate("/dashboard", { replace: true })
-          return
-        }
-
-        setError(data.message || "Invalid User ID or Password")
-        setLoading(false)
-        return
       }
     } catch (apiError) {
-      console.warn("Backend auth unavailable, trying demo fallback:", apiError)
+      console.warn("Backend auth unavailable, evaluating role demo login:", apiError)
     }
 
-    // 2. Demo fallback if server is offline or user is MP001 demo
-    if (userId.trim().toUpperCase() === "MP001" && password === "12345") {
+    // 2. Role-based fallback / demo logins
+    // MP demo credentials work in both roles
+    if (cleanUserUpper === "MP001" && password === "12345") {
       sessionStorage.setItem("memberLoggedIn", "true")
-      sessionStorage.setItem("user", JSON.stringify({ username: "MP001", email: "mp001@parliament.nic.in" }))
+      sessionStorage.setItem("userRole", role)
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: "MP001",
+          role: role,
+          name: role === "admin" ? "Hon'ble MP (Admin Privileges)" : "Hon'ble MP (Citizen View)",
+          email: "mp001@parliament.nic.in",
+        })
+      )
       sessionStorage.setItem("memberId", "MP001")
-
       setLoading(false)
       navigate("/dashboard", { replace: true })
-    } else {
-      setError("Invalid User ID or Password")
-      setLoading(false)
+      return
     }
+
+    // Admin demo credentials
+    if (role === "admin" && (cleanUserUpper === "ADMIN01" || cleanUser.toLowerCase() === "admin") && (password === "admin123" || password === "admin")) {
+      sessionStorage.setItem("memberLoggedIn", "true")
+      sessionStorage.setItem("userRole", "admin")
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: cleanUserUpper || "ADMIN01",
+          role: "admin",
+          name: "Parliament Secretariat Administrator",
+          email: "admin@sansad.nic.in",
+        })
+      )
+      sessionStorage.setItem("memberId", cleanUserUpper || "ADMIN01")
+      setLoading(false)
+      navigate("/dashboard", { replace: true })
+      return
+    }
+
+    // Citizen / Public demo credentials
+    if (role === "user" && (cleanUserUpper === "CITIZEN01" || cleanUser.toLowerCase() === "citizen" || cleanUser.toLowerCase() === "user") && (password === "user123" || password === "12345")) {
+      sessionStorage.setItem("memberLoggedIn", "true")
+      sessionStorage.setItem("userRole", "user")
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: cleanUserUpper || "CITIZEN01",
+          role: "user",
+          name: "Verified Citizen User",
+          email: "citizen@india.gov.in",
+        })
+      )
+      sessionStorage.setItem("memberId", cleanUserUpper || "CITIZEN01")
+      setLoading(false)
+      navigate("/dashboard", { replace: true })
+      return
+    }
+
+    setError(`Invalid ${role === "admin" ? "Admin / MP" : "Citizen"} ID or Password`)
+    setLoading(false)
 
   }
 
@@ -1747,29 +1854,57 @@ function Login() {
 
     <div className="simple-page">
 
-
       <div className="login-card">
 
+        {/* Role Switcher Pill Tabs */}
+        <div className="login-role-switch">
+          <button
+            type="button"
+            className={`role-tab-btn ${role === "user" ? "active role-user" : ""}`}
+            onClick={() => switchRole("user")}
+          >
+            👤 Citizen / Public
+          </button>
+          <button
+            type="button"
+            className={`role-tab-btn ${role === "admin" ? "active role-admin" : ""}`}
+            onClick={() => switchRole("admin")}
+          >
+            👑 Admin & MP
+          </button>
+        </div>
 
-        <h1>
-          Member Login
-        </h1>
+        <div style={{ textAlign: "center", marginBottom: "16px" }}>
+          <div
+            style={{
+              display: "inline-block",
+              padding: "4px 12px",
+              borderRadius: "20px",
+              fontSize: "11px",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              background: role === "admin" ? "rgba(245, 158, 11, 0.15)" : "rgba(37, 99, 235, 0.12)",
+              color: role === "admin" ? "#d97706" : "#2563eb",
+              border: `1px solid ${role === "admin" ? "rgba(245, 158, 11, 0.3)" : "rgba(37, 99, 235, 0.25)"}`,
+              marginBottom: "10px",
+            }}
+          >
+            {role === "admin" ? "Official Parliamentary Secretariat Portal" : "Democratic Public Participation Portal"}
+          </div>
+          <h1>{role === "admin" ? "Admin & MP Login" : "Citizen Portal Login"}</h1>
+          <p>
+            {role === "admin"
+              ? "Authorized access for Parliament Secretariat, Officers, and Hon'ble MPs."
+              : "Access public question submissions, committee hearings, and RTI portals."}
+          </p>
+        </div>
 
-
-        <p>
-          Login to access your parliamentary dashboard.
-        </p>
-
-
-        <form
-          onSubmit={handleLogin}
-        >
-
+        <form onSubmit={handleLogin}>
 
           <label>
-            User ID / Username
+            {role === "admin" ? "Admin / MP Official ID" : "Citizen ID or Email"}
           </label>
-
 
           <input
             type="text"
@@ -1777,15 +1912,13 @@ function Login() {
             onChange={(event) =>
               setUserId(event.target.value)
             }
-            placeholder="e.g. MP001 or admin"
+            placeholder={role === "admin" ? "e.g. ADMIN01 or MP001" : "e.g. CITIZEN01 or user@email.com"}
             required
           />
-
 
           <label>
             Password
           </label>
-
 
           <input
             type="password"
@@ -1797,32 +1930,70 @@ function Login() {
             required
           />
 
-
           {error && (
-
             <div className="login-error">
               {error}
             </div>
-
           )}
-
 
           <button
             type="submit"
             className="primary-button"
+            style={{
+              background: role === "admin" ? "linear-gradient(135deg, #d97706, #b45309)" : undefined,
+            }}
             disabled={loading}
           >
-
-            {loading ? "Logging in..." : "Login"}
-
+            {loading ? "Authenticating..." : role === "admin" ? "Login as Official / Admin" : "Login as Citizen"}
           </button>
-
 
         </form>
 
+        {/* 1-Click Demo Credentials */}
+        <div className="login-demo-helper">
+          <span style={{ fontSize: "11px", color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            Quick Demo Fill:
+          </span>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px" }}>
+            {role === "admin" ? (
+              <>
+                <button
+                  type="button"
+                  className="demo-fill-btn"
+                  onClick={() => fillDemoCredentials("ADMIN01", "admin123")}
+                >
+                  👑 ADMIN01 / admin123
+                </button>
+                <button
+                  type="button"
+                  className="demo-fill-btn"
+                  onClick={() => fillDemoCredentials("MP001", "12345")}
+                >
+                  🏛 MP001 / 12345
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="demo-fill-btn"
+                  onClick={() => fillDemoCredentials("CITIZEN01", "user123")}
+                >
+                  👤 CITIZEN01 / user123
+                </button>
+                <button
+                  type="button"
+                  className="demo-fill-btn"
+                  onClick={() => fillDemoCredentials("MP001", "12345")}
+                >
+                  🏛 MP001 / 12345
+                </button>
+              </>
+            )}
+          </div>
+        </div>
 
       </div>
-
 
     </div>
 
@@ -1851,6 +2022,8 @@ function Dashboard() {
   const [questionType, setQuestionType] = useState("Starred")
   const [submittingQuestion, setSubmittingQuestion] = useState(false)
   const [submissionFeedback, setSubmissionFeedback] = useState("")
+
+  const activeRole = sessionStorage.getItem("userRole") || currentUser?.role || "user"
 
   useEffect(() => {
 
@@ -1950,6 +2123,7 @@ function Dashboard() {
     sessionStorage.removeItem("refreshToken")
     sessionStorage.removeItem("user")
     sessionStorage.removeItem("memberId")
+    sessionStorage.removeItem("userRole")
 
     navigate(
       "/login",
@@ -2198,18 +2372,23 @@ function Dashboard() {
 
 
         <span className="hero-label">
-          MEMBER AREA
+          {activeRole === "admin" ? "👑 OFFICIAL ADMINISTRATOR PORTAL" : "👤 CITIZEN MEMBER AREA"}
         </span>
 
 
         <h1>
-          Member Dashboard
+          {activeRole === "admin" ? "Parliamentary Admin & MP Dashboard" : "Citizen Services Dashboard"}
         </h1>
 
 
         <p>
-          Welcome, {currentUser?.username || "Demo Member One"}
+          Welcome, {currentUser?.name || currentUser?.username || (activeRole === "admin" ? "Hon'ble Administrator" : "Citizen User")}
           {currentUser?.email && ` (${currentUser.email})`}
+          {activeRole === "admin" && (
+            <span style={{ marginLeft: "10px", padding: "2px 10px", background: "#fef3c7", color: "#b45309", borderRadius: "12px", fontSize: "11px", fontWeight: "700", border: "1px solid #fde68a" }}>
+              Admin Privileges Active
+            </span>
+          )}
         </p>
 
         {/* MP Action Banner */}
@@ -2371,9 +2550,9 @@ function Dashboard() {
           </Link>
 
 
-          <div>
+          <Link to="/notifications">
             Notifications
-          </div>
+          </Link>
 
 
           <Link to="/documents">
