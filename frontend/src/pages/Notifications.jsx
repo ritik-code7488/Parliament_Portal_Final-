@@ -48,43 +48,52 @@ function Notifications() {
     fetchNotifications()
   }, [])
 
-  const markAsRead = async (id) => {
+  const markAsRead = async (id, e) => {
+    if (e) e.stopPropagation()
+    // Optimistic UI state update immediately
+    setNotifications((current) =>
+      current.map((notification) =>
+        notification.id === id
+          ? { ...notification, is_read: true }
+          : notification
+      )
+    )
+
     try {
-      const response = await fetch(
-        `${API_URL}${id}/mark_read/`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error(
-          "Failed to mark notification as read"
-        )
+      const res = await fetch(`${API_URL}${id}/mark_read/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      })
+      if (!res.ok) {
+        await fetch(`${API_URL}${id}/mark_read/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => {})
       }
-
-      setNotifications((current) =>
-        current.map((notification) =>
-          notification.id === id
-            ? {
-                ...notification,
-                is_read: true,
-              }
-            : notification
-        )
-      )
     } catch (err) {
-      console.error(
-        "Mark notification read error:",
-        err
-      )
+      console.warn("Mark read network error (optimistic):", err)
+    }
+  }
 
-      setError(
-        "Unable to mark notification as read."
-      )
+  const markAllAsRead = async () => {
+    // Optimistic UI state update immediately
+    setNotifications((current) =>
+      current.map((notification) => ({ ...notification, is_read: true }))
+    )
+
+    try {
+      const res = await fetch(`${API_URL}mark_all_read/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+      if (!res.ok) {
+        await fetch(`${API_URL}mark_all_read/`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => {})
+      }
+    } catch (err) {
+      console.warn("Mark all read network error (optimistic):", err)
     }
   }
 
@@ -227,12 +236,25 @@ function Notifications() {
 
         </div>
 
-        <button
-          className="refresh-btn"
-          onClick={fetchNotifications}
-        >
-          ↻ Refresh
-        </button>
+        <div className="notifications-header-actions">
+          {unreadNotifications > 0 && (
+            <button
+              type="button"
+              className="mark-all-read-btn"
+              onClick={markAllAsRead}
+              title="Mark all notifications as read"
+            >
+              ✓ Mark All as Read ({unreadNotifications})
+            </button>
+          )}
+          <button
+            type="button"
+            className="refresh-btn"
+            onClick={fetchNotifications}
+          >
+            ↻ Refresh
+          </button>
+        </div>
 
       </div>
 
@@ -483,17 +505,23 @@ function Notifications() {
                       )}
                     </span>
 
-                    {!notification.is_read && (
+                    {!notification.is_read ? (
                       <button
+                        type="button"
                         className="mark-read-btn"
-                        onClick={() =>
+                        onClick={(e) =>
                           markAsRead(
-                            notification.id
+                            notification.id,
+                            e
                           )
                         }
                       >
-                        Mark as Read
+                        ✓ Mark as Read
                       </button>
+                    ) : (
+                      <span className="read-status-pill">
+                        ✓ Read
+                      </span>
                     )}
 
                   </div>

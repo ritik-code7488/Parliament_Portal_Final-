@@ -12,7 +12,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
 
     serializer_class = NotificationSerializer
 
-    @action(detail=True, methods=['patch'])
+    @action(detail=True, methods=['patch', 'post'])
     def mark_read(self, request, pk=None):
 
         notification = self.get_object()
@@ -24,4 +24,14 @@ class NotificationViewSet(viewsets.ModelViewSet):
         return Response({
             'message': 'Notification marked as read',
             'notification': NotificationSerializer(notification).data
+        })
+
+    @action(detail=False, methods=['patch', 'post'])
+    def mark_all_read(self, request):
+
+        updated_count = Notification.objects.filter(is_read=False).update(is_read=True)
+
+        return Response({
+            'message': f'{updated_count} notifications marked as read',
+            'updated_count': updated_count
         })

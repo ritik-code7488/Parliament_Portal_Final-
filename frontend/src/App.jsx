@@ -2429,6 +2429,45 @@ function Dashboard() {
 
   }, [])
 
+  const markDashboardNotificationAsRead = async (id, e) => {
+    if (e) e.stopPropagation()
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+    )
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/notifications/notifications/${id}/mark_read/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      })
+      if (!res.ok) {
+        await fetch(`${API_BASE_URL}/api/notifications/notifications/${id}/mark_read/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => {})
+      }
+    } catch (err) {
+      console.warn("Error marking notification read (optimistic):", err)
+    }
+  }
+
+  const markAllDashboardNotificationsAsRead = async () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/notifications/notifications/mark_all_read/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+      if (!res.ok) {
+        await fetch(`${API_BASE_URL}/api/notifications/notifications/mark_all_read/`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => {})
+      }
+    } catch (err) {
+      console.warn("Error marking all notifications read (optimistic):", err)
+    }
+  }
+
 
   const handleLogout = () => {
 
@@ -3110,140 +3149,118 @@ function Dashboard() {
 
 
         <section className="dashboard-notification-section">
-
-
-          <div className="dashboard-notification-title">
-
-            <h2>
-              Notifications
-            </h2>
-
-            <span className="dashboard-notification-count">
-              {notifications.length}
-            </span>
-
+          <div className="dashboard-notif-header-strip">
+            <div className="dashboard-notif-header-title">
+              <span className="dashboard-notif-icon-bubble">🔔</span>
+              <div>
+                <h2>Parliamentary Bulletins &amp; Notifications</h2>
+                <p>Real-time official notices, daily orders, gazette circulars, and session alerts</p>
+              </div>
+            </div>
+            <div className="dashboard-notif-header-actions">
+              {notifications.some((n) => !n.is_read) && (
+                <button
+                  type="button"
+                  className="dashboard-mark-all-read-btn"
+                  onClick={markAllDashboardNotificationsAsRead}
+                  title="Mark all notifications as read"
+                >
+                  ✓ Mark All as Read ({notifications.filter((n) => !n.is_read).length})
+                </button>
+              )}
+              <Link to="/notifications" className="dashboard-view-all-notif-link">
+                View All Archive →
+              </Link>
+            </div>
           </div>
 
-
           {notificationLoading && (
-
-            <div className="dashboard-notification-message">
-              Loading notifications...
+            <div className="dashboard-notif-state-card">
+              <div className="dash-spinner"></div>
+              <span>Loading latest secretariat notifications...</span>
             </div>
-
           )}
 
+          {!notificationLoading && notificationError && (
+            <div className="dashboard-notif-error-card">
+              ⚠️ {notificationError}
+            </div>
+          )}
 
-          {!notificationLoading &&
-            notificationError && (
+          {!notificationLoading && !notificationError && notifications.length === 0 && (
+            <div className="dashboard-notif-empty-card">
+              <span style={{ fontSize: "32px", display: "block", marginBottom: "8px" }}>📭</span>
+              <strong>No notifications available</strong>
+              <p>All parliamentary bulletins are up to date.</p>
+            </div>
+          )}
 
-              <div className="dashboard-notification-error">
-                {notificationError}
-              </div>
-
-            )}
-
-
-          {!notificationLoading &&
-            !notificationError &&
-            notifications.length === 0 && (
-
-              <div className="dashboard-notification-message">
-                No notifications available.
-              </div>
-
-            )}
-
-
-          {!notificationLoading &&
-            !notificationError &&
-            notifications.length > 0 && (
-
-              <div className="dashboard-notification-list">
-
-                {notifications.map(
-                  (notification) => (
-
-                    <div
-                      key={notification.id}
-                      className="dashboard-notification-card"
-                    >
-
-
-                      <div className="dashboard-notification-card-top">
-
-                        <h3>
-                          {notification.title}
-                        </h3>
-
-
-                        <span className="dashboard-notification-priority">
-                          {notification.priority}
-                        </span>
-
-                      </div>
-
-
-                      <p>
-                        {notification.message}
-                      </p>
-
-
-                      <div className="dashboard-notification-meta">
-
-                        <span>
-                          Type: {notification.notification_type}
-                        </span>
-
-                        <span>
-                          •
-                        </span>
-
-                        <span>
-                          {notification.is_read
-                            ? "Read"
-                            : "Unread"}
-                        </span>
-
-                        {notification.created_at && (
-
-                          <>
-                            <span>
-                              •
-                            </span>
-
-                            <span>
-
-                              {new Date(
-                                notification.created_at
-                              ).toLocaleDateString(
-                                "en-IN",
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                }
-                              )}
-
-                            </span>
-
-                          </>
-
-                        )}
-
-                      </div>
-
-
+          {!notificationLoading && !notificationError && notifications.length > 0 && (
+            <div className="dashboard-notif-grid">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`dashboard-notif-item ${notification.is_read ? "notif-read" : "notif-unread"}`}
+                >
+                  <div className="dashboard-notif-item-top">
+                    <div className="dashboard-notif-badges">
+                      <span className={`notif-priority-tag priority-${(notification.priority || "normal").toLowerCase()}`}>
+                        {notification.priority || "Normal"}
+                      </span>
+                      <span className="notif-type-tag">
+                        {notification.notification_type || "General"}
+                      </span>
+                      {!notification.is_read ? (
+                        <span className="notif-unread-indicator">● New</span>
+                      ) : (
+                        <span className="notif-read-indicator">✓ Read</span>
+                      )}
                     </div>
 
-                  )
-                )}
+                    {!notification.is_read ? (
+                      <button
+                        type="button"
+                        className="dashboard-item-mark-read-btn"
+                        onClick={(e) => markDashboardNotificationAsRead(notification.id, e)}
+                        title="Mark this bulletin as read"
+                      >
+                        ✓ Mark as Read
+                      </button>
+                    ) : (
+                      <span className="dashboard-item-done-badge">
+                        ✓ Read
+                      </span>
+                    )}
+                  </div>
 
-              </div>
+                  <h3 className="dashboard-notif-item-title">
+                    {notification.title}
+                  </h3>
 
-            )}
+                  <p className="dashboard-notif-item-message">
+                    {notification.message}
+                  </p>
 
-
+                  <div className="dashboard-notif-item-footer">
+                    <span className="dashboard-notif-time">
+                      🕒 {notification.created_at ? new Date(notification.created_at).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      }) : "Recent Bulletin"}
+                    </span>
+                    {notification.member_id && (
+                      <span className="dashboard-notif-target-mp">
+                        Recipient: <strong>{notification.member_id}</strong>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
 

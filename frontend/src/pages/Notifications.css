@@ -873,3 +873,63 @@
       100%;
   }
 }
+
+
+/* =========================================================
+   MARK ALL & READ STATUS PILL
+   ========================================================= */
+
+.notifications-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mark-all-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 0 18px;
+  border: 1px solid #059669;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s ease;
+}
+
+.mark-all-read-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #047857, #059669);
+}
+
+.read-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .notifications-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .mark-all-read-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
