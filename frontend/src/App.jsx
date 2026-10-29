@@ -2214,6 +2214,18 @@ function Dashboard() {
       is_active: true,
       status: "Verified",
     },
+    {
+      id: 4,
+      username: "MP041",
+      full_name: "RAYA RAJ",
+      email: "raya@example.com",
+      role: "mp",
+      state: "Maharashtra",
+      constituency: "Panvel (Lok Sabha)",
+      date_joined: "2026-09-10",
+      is_active: true,
+      status: "Verified",
+    },
   ]
 
   const fetchRegisteredUsers = async () => {
