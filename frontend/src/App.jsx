@@ -2214,6 +2214,18 @@ function Dashboard() {
       is_active: true,
       status: "Verified",
     },
+    {
+      id: 4,
+      username: "MP041",
+      full_name: "Mr. Ritik Raj",
+      email: "ritik.raj@sansad.nic.in",
+      role: "mp",
+      state: "Bihar",
+      constituency: "Patna Sahib (Lok Sabha)",
+      date_joined: "2026-10-29",
+      is_active: true,
+      status: "Verified",
+    },
   ]
 
   const fetchRegisteredUsers = async () => {
