@@ -2691,32 +2691,74 @@ function Dashboard() {
 
       <div className="dashboard-container">
 
+        {/* Executive Hero Banner */}
+        <div className="dashboard-hero-banner">
+          <div className="dashboard-hero-top">
+            <div className="dashboard-hero-badge">
+              <span className="live-pulse-dot"></span>
+              <span>{activeRole === "admin" ? "👑 OFFICIAL ADMINISTRATOR PORTAL" : "👤 CITIZEN MEMBER CONSOLE"}</span>
+            </div>
+            <div className="dashboard-hero-session">
+              🏛️ 18th Lok Sabha &amp; Rajya Sabha • Digital Sansad System
+            </div>
+          </div>
 
-        <span className="hero-label">
-          {activeRole === "admin" ? "👑 OFFICIAL ADMINISTRATOR PORTAL" : "👤 CITIZEN MEMBER AREA"}
-        </span>
+          <h1 className="dashboard-hero-title">
+            {activeRole === "admin" ? "Parliamentary Admin & MP Dashboard" : "Citizen Services Dashboard"}
+          </h1>
 
+          <p className="dashboard-hero-subtitle">
+            Centralized executive workspace for Members of Parliament, administrative secretariats, and registered citizens to monitor legislative affairs, parliamentary inquiries, and official records.
+          </p>
 
-        <h1>
-          {activeRole === "admin" ? "Parliamentary Admin & MP Dashboard" : "Citizen Services Dashboard"}
-        </h1>
+          <div className="dashboard-hero-user-strip">
+            <div className="dashboard-hero-user-info">
+              <div className={`dashboard-user-avatar ${activeRole === "admin" ? "user-admin" : "user-citizen"}`}>
+                {activeRole === "admin" ? "👑" : "👤"}
+              </div>
+              <div className="dashboard-user-text">
+                <h4>
+                  {currentUser?.full_name || currentUser?.name || currentUser?.username || (activeRole === "admin" ? "Hon'ble Administrator" : "Citizen User")}
+                  {activeRole === "admin" && (
+                    <span className="dashboard-privilege-badge">
+                      Admin Privileges Active
+                    </span>
+                  )}
+                </h4>
+                <p>
+                  ID: <strong>{currentUser?.username || (activeRole === "admin" ? "ADMIN01" : "CITIZEN01")}</strong>
+                  {currentUser?.email && ` • ${currentUser.email}`}
+                  {currentUser?.state && ` • ${currentUser.state}`}
+                </p>
+              </div>
+            </div>
 
-
-        <p>
-          Welcome, {currentUser?.name || currentUser?.username || (activeRole === "admin" ? "Hon'ble Administrator" : "Citizen User")}
-          {currentUser?.email && ` (${currentUser.email})`}
-          {activeRole === "admin" && (
-            <span style={{ marginLeft: "10px", padding: "2px 10px", background: "#fef3c7", color: "#b45309", borderRadius: "12px", fontSize: "11px", fontWeight: "700", border: "1px solid #fde68a" }}>
-              Admin Privileges Active
-            </span>
-          )}
-        </p>
+            <div className="dashboard-stat-pills">
+              <div className="dash-stat-pill">
+                <strong>41+</strong>
+                <span>MPs</span>
+              </div>
+              <div className="dash-stat-pill">
+                <strong>28</strong>
+                <span>Bills</span>
+              </div>
+              <div className="dash-stat-pill">
+                <strong>54</strong>
+                <span>Questions</span>
+              </div>
+              <div className="dash-stat-pill">
+                <strong>12</strong>
+                <span>Panels</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* MP Action Banner */}
         <div className="member-action-bar">
           <div>
             <strong style={{ display: "block", color: "#14325c", fontSize: "15px" }}>
-              Parliamentary Inquiry & Notices
+              Parliamentary Inquiry & Notices Desk
             </strong>
             <span style={{ fontSize: "12px", color: "#607289" }}>
               Submit a formal parliamentary question or check session notifications.
@@ -2836,50 +2878,216 @@ function Dashboard() {
         )}
 
 
+        {/* 8 Premium Executive Dashboard Tiles */}
         <div className="dashboard-grid">
-
 
           <Link
             to="/member-profile?member=1"
+            className="dashboard-card dash-card-profile"
           >
-            My Profile
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">👤</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">01</span>
+                <span className="dash-card-status">Active Dossier</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">OFFICIAL DOSSIER</span>
+              <h3 className="dash-card-title">My Member Profile</h3>
+              <p className="dash-card-desc">
+                Access your verified biographical profile, constituency representation, house credentials, and parliamentary portfolio.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Open Dossier</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/bills">
-            Bills & Acts
+          <Link
+            to="/bills"
+            className="dashboard-card dash-card-bills"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">📜</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">02</span>
+                <span className="dash-card-status">Legislation</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">BILLS & ACTS</span>
+              <h3 className="dash-card-title">Bills & Gazetted Acts</h3>
+              <p className="dash-card-desc">
+                Examine legislative bills introduced, status timelines, legal amendments, gazette publications, and enacted statutes.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Browse Bills</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/questions">
-            Questions
+          <Link
+            to="/questions"
+            className="dashboard-card dash-card-questions"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">💬</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">03</span>
+                <span className="dash-card-status">Ministerial Q&A</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">PARLIAMENTARY INQUIRIES</span>
+              <h3 className="dash-card-title">Questions & Replies</h3>
+              <p className="dash-card-desc">
+                Search Starred and Unstarred ministerial questions, oral session inquiries, and verified tabled secretariat replies.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Search Questions</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/committees">
-            Committees
+          <Link
+            to="/committees"
+            className="dashboard-card dash-card-committees"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">🏛️</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">04</span>
+                <span className="dash-card-status">Scrutiny Panels</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">PARLIAMENTARY PANELS</span>
+              <h3 className="dash-card-title">Committees & Scrutiny</h3>
+              <p className="dash-card-desc">
+                Review Standing, Select, and Joint parliamentary committees, active chairs, member composition, and reports.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">View Committees</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/proceedings">
-            Proceedings
+          <Link
+            to="/proceedings"
+            className="dashboard-card dash-card-proceedings"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">⚖️</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">05</span>
+                <span className="dash-card-status">Debates & Sittings</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">HOUSE SITTINGS</span>
+              <h3 className="dash-card-title">House Proceedings</h3>
+              <p className="dash-card-desc">
+                Access official debate transcripts, daily legislative business, motions, and verbatim session logs across houses.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Read Proceedings</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/attendance">
-            Attendance
+          <Link
+            to="/attendance"
+            className="dashboard-card dash-card-attendance"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">📋</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">06</span>
+                <span className="dash-card-status">Verified Logs</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">PARTICIPATION AUDIT</span>
+              <h3 className="dash-card-title">Member Attendance</h3>
+              <p className="dash-card-desc">
+                Verified parliamentary attendance logs, daily roll calls, division lobbies, and committee participation records.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Check Attendance</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/notifications">
-            Notifications
+          <Link
+            to="/notifications"
+            className="dashboard-card dash-card-notifications"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">🔔</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">07</span>
+                <span className="dash-card-status">Real-Time</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">SECRETARIAT BULLETINS</span>
+              <h3 className="dash-card-title">Live Notifications</h3>
+              <p className="dash-card-desc">
+                Real-time official secretariat bulletins, gazette alerts, urgent sitting notices, calendar amendments, and press releases.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">View Notifications</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
 
-
-          <Link to="/documents">
-            Documents
+          <Link
+            to="/documents"
+            className="dashboard-card dash-card-documents"
+          >
+            <div className="dash-card-header">
+              <div className="dash-card-icon-wrap">
+                <span className="dash-card-icon">📑</span>
+              </div>
+              <div className="dash-card-badges">
+                <span className="dash-card-number">08</span>
+                <span className="dash-card-status">Official Archive</span>
+              </div>
+            </div>
+            <div className="dash-card-body">
+              <span className="dash-card-tag">DIGITAL REPOSITORY</span>
+              <h3 className="dash-card-title">Documents & Reports</h3>
+              <p className="dash-card-desc">
+                Official parliamentary papers, publications, gazettes, committee reports, public enactments, and downloadable PDFs.
+              </p>
+            </div>
+            <div className="dash-card-footer">
+              <span className="dash-card-link-text">Browse Documents</span>
+              <span className="dash-card-arrow">→</span>
+            </div>
           </Link>
-
 
         </div>
 
