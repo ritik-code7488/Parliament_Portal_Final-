@@ -26,6 +26,8 @@ import Attendance from "./pages/Attendance"
 import Documents from "./pages/Documents"
 import DocumentDetails from "./pages/DocumentDetails"
 import Notifications from "./pages/Notifications"
+import NoticeModal from "./NoticeModal"
+import { DEMO_PARLIAMENTARY_NOTICES } from "./demoNotices" 
 
 
 /* =========================================================
@@ -2151,7 +2153,8 @@ function Dashboard() {
   const navigate = useNavigate()
 
   const [currentUser, setCurrentUser] = useState(null)
-  const [notifications, setNotifications] = useState([])
+  const [notifications, setNotifications] = useState(DEMO_PARLIAMENTARY_NOTICES)
+  const [selectedNotice, setSelectedNotice] = useState(null)
   const [notificationLoading, setNotificationLoading] = useState(true)
   const [notificationError, setNotificationError] = useState("")
 
@@ -2434,6 +2437,9 @@ function Dashboard() {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
     )
+    if (selectedNotice && selectedNotice.id === id) {
+      setSelectedNotice((prev) => (prev ? { ...prev, is_read: true } : null))
+    }
     try {
       const res = await fetch(`${API_BASE_URL}/api/notifications/notifications/${id}/mark_read/`, {
         method: "PATCH",
@@ -2450,8 +2456,34 @@ function Dashboard() {
     }
   }
 
+  const toggleDashboardNoticeRead = async (id, e) => {
+    if (e) e.stopPropagation()
+    const target = notifications.find((n) => n.id === id)
+    const newStatus = target ? !target.is_read : true
+
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_read: newStatus } : n))
+    )
+    if (selectedNotice && selectedNotice.id === id) {
+      setSelectedNotice((prev) => (prev ? { ...prev, is_read: newStatus } : null))
+    }
+
+    try {
+      const endpoint = newStatus ? "mark_read" : "mark_unread"
+      await fetch(`${API_BASE_URL}/api/notifications/notifications/${id}/${endpoint}/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+    } catch (err) {
+      console.warn("Toggle notification read error:", err)
+    }
+  }
+
   const markAllDashboardNotificationsAsRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
+    if (selectedNotice) {
+      setSelectedNotice((prev) => (prev ? { ...prev, is_read: true } : null))
+    }
     try {
       const res = await fetch(`${API_BASE_URL}/api/notifications/notifications/mark_all_read/`, {
         method: "POST",
@@ -2466,6 +2498,32 @@ function Dashboard() {
     } catch (err) {
       console.warn("Error marking all notifications read (optimistic):", err)
     }
+  }
+
+  const handleOpenNotice = (notice) => {
+    setSelectedNotice(notice)
+    if (!notice.is_read) {
+      markDashboardNotificationAsRead(notice.id)
+    }
+  }
+
+  const resetDashboardDemoNotices = async () => {
+    try {
+      setNotificationLoading(true)
+      const res = await fetch(`${API_BASE_URL}/api/notifications/notifications/reset_demo/`, { method: "POST" })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.notifications && Array.isArray(data.notifications)) {
+          setNotifications(data.notifications)
+          setNotificationLoading(false)
+          return
+        }
+      }
+    } catch (e) {
+      console.warn("Reset demo notices backend error:", e)
+    }
+    setNotifications(DEMO_PARLIAMENTARY_NOTICES.map((n) => ({ ...n })))
+    setNotificationLoading(false)
   }
 
 
@@ -3163,11 +3221,19 @@ function Dashboard() {
                   type="button"
                   className="dashboard-mark-all-read-btn"
                   onClick={markAllDashboardNotificationsAsRead}
-                  title="Mark all notifications as read"
+                  title="Mark all notifications as read & seen"
                 >
-                  ✓ Mark All as Read ({notifications.filter((n) => !n.is_read).length})
+                  ✓ Mark All Seen ({notifications.filter((n) => !n.is_read).length})
                 </button>
               )}
+              <button
+                type="button"
+                className="dashboard-reset-demo-btn"
+                onClick={resetDashboardDemoNotices}
+                title="Reset 6 demo notices to test seen, read, and unread"
+              >
+                ↻ Reset 6 Demo Notices
+              </button>
               <Link to="/notifications" className="dashboard-view-all-notif-link">
                 View All Archive →
               </Link>
@@ -3201,6 +3267,8 @@ function Dashboard() {
                 <div
                   key={notification.id}
                   className={`dashboard-notif-item ${notification.is_read ? "notif-read" : "notif-unread"}`}
+                  onClick={() => handleOpenNotice(notification)}
+                  title="Click to open and read full notice"
                 >
                   <div className="dashboard-notif-item-top">
                     <div className="dashboard-notif-badges">
@@ -3211,26 +3279,47 @@ function Dashboard() {
                         {notification.notification_type || "General"}
                       </span>
                       {!notification.is_read ? (
-                        <span className="notif-unread-indicator">● New</span>
+                        <span className="notif-unread-indicator">● New Notice</span>
                       ) : (
-                        <span className="notif-read-indicator">✓ Read</span>
+                        <span className="notif-read-indicator">✓ Seen</span>
                       )}
                     </div>
 
-                    {!notification.is_read ? (
+                    <div className="dashboard-item-actions-group" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        className="dashboard-item-mark-read-btn"
-                        onClick={(e) => markDashboardNotificationAsRead(notification.id, e)}
-                        title="Mark this bulletin as read"
+                        className="dashboard-item-open-btn"
+                        onClick={() => handleOpenNotice(notification)}
+                        title="Open full notice document"
                       >
-                        ✓ Mark as Read
+                        👁️ Open Notice
                       </button>
-                    ) : (
-                      <span className="dashboard-item-done-badge">
-                        ✓ Read
-                      </span>
-                    )}
+
+                      {!notification.is_read ? (
+                        <button
+                          type="button"
+                          className="dashboard-item-mark-read-btn"
+                          onClick={(e) => markDashboardNotificationAsRead(notification.id, e)}
+                          title="Mark this notice as Seen & Read"
+                        >
+                          ✓ Mark as Seen
+                        </button>
+                      ) : (
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                          <span className="dashboard-item-done-badge">
+                            ✓ Seen
+                          </span>
+                          <button
+                            type="button"
+                            className="dashboard-unread-toggle-btn"
+                            onClick={(e) => toggleDashboardNoticeRead(notification.id, e)}
+                            title="Mark as unread to test again"
+                          >
+                            ↩ Unread
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <h3 className="dashboard-notif-item-title">
@@ -3670,6 +3759,13 @@ function Dashboard() {
 
       </div>
 
+      {/* Official Parliamentary Notice Reader Modal */}
+      <NoticeModal
+        notice={selectedNotice}
+        onClose={() => setSelectedNotice(null)}
+        onToggleRead={toggleDashboardNoticeRead}
+        onMarkRead={markDashboardNotificationAsRead}
+      />
 
     </div>
 

@@ -933,3 +933,116 @@
     justify-content: center;
   }
 }
+
+
+/* =========================================================
+   RESET DEMO NOTICES & OPEN NOTICE BUTTONS
+   ========================================================= */
+
+.reset-demo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 43px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  transition: all 0.2s ease;
+}
+
+.reset-demo-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+.notification-card {
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notification-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(16, 42, 86, 0.12);
+  border-color: #93c5fd;
+}
+
+.card-action-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.open-notice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.open-notice-btn:hover {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.mark-unread-toggle-btn {
+  background: transparent;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mark-unread-toggle-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.notification-summary-card.highlight-unread .summary-value {
+  color: #2563eb;
+}
+
+.notification-summary-card.highlight-seen .summary-value {
+  color: #059669;
+}
+
+.notification-summary-card.highlight-urgent .summary-value {
+  color: #dc2626;
+}
+
+@media (max-width: 650px) {
+  .card-action-buttons-group {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .open-notice-btn,
+  .mark-read-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
