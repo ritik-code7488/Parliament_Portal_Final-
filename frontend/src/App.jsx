@@ -71,7 +71,12 @@ function Header() {
       })
 
       .then((data) => {
-        setMembers(data)
+        if (Array.isArray(data)) {
+          const sorted = [...data].sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0))
+          setMembers(sorted)
+        } else {
+          setMembers([])
+        }
       })
 
       .catch((error) => {

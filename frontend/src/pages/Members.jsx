@@ -27,9 +27,12 @@ function Members() {
         console.log("Members API data:", data)
 
         if (Array.isArray(data)) {
-          setMembers(data)
+          // Always ensure Member #1 (Mr. Ritik Raj) is at the #1 position
+          const sorted = [...data].sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0))
+          setMembers(sorted)
         } else if (data.results && Array.isArray(data.results)) {
-          setMembers(data.results)
+          const sorted = [...data.results].sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0))
+          setMembers(sorted)
         } else {
           setMembers([])
         }
