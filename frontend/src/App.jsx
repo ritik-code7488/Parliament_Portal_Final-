@@ -2234,6 +2234,18 @@ function Dashboard() {
       is_active: true,
       status: "Verified",
     },
+    {
+      id: 5,
+      username: "MP042",
+      full_name: "Sumit Kumar Roy",
+      email: "sumitroy6200@gmail.com",
+      role: "mp",
+      state: "Bihar",
+      constituency: "Madhubani (Lok Sabha)",
+      date_joined: "2026-10-30",
+      is_active: true,
+      status: "Verified",
+    },
   ]
 
   const fetchRegisteredUsers = async () => {
